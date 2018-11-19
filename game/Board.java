@@ -111,6 +111,16 @@ public class Board {
 		return out;
 	}
 	
+	/**
+	 * 
+	 * @param index
+	 * @return
+	 */
+	
+	public Tile getTile(int index) {
+		return tiles[index];
+	}
+	
 //---  Getter Methods   -----------------------------------------------------------------------
 
 	/**

@@ -24,9 +24,24 @@ public class GameView extends InteractFrame{
 	private static final int SCREEN_WIDTH = 1200;
     private static final int SCREEN_HEIGHT = 800;
 	private static final int TEXT_HEIGHT = 8;
-    private static final String[] TITLE_MENU_TEXT = {"Mr.Jack", "A Game", "(By Mac and Sarah)"};
+    private static final String[] TITLE_MENU_TEXT = {"Mr.Jack", "A Game", "(By Mac and Sarah)", "(And Sienna)"};
     private static final int BOARD_CENTER_X = SCREEN_WIDTH * 5 / 6 / 2;
     private static final int BOARD_CENTER_Y = SCREEN_HEIGHT * 2 / 5;
+    private static final int LINE_THICKNESS = 3;
+    
+    private static final int BUTTON_MENU_CODE = -5;
+    private static final int BUTTON_SELECT_CODE = -6;
+    private static final int BUTTON_MOVE_CODE = -7;
+    private static final int BUTTON_ABILITY_CODE = -8;
+    private static final int BUTTON_CANCEL_CODE = -9;
+    
+    private static final int PROGRAM_STATE_MENU = 0;
+    private static final int PROGRAM_STATE_GAME = 1;
+    
+    private static final int GAME_STATE_DEFAULT = 0;
+    private static final int GAME_STATE_SELECT = 1;
+    private static final int GAME_STATE_MOVE = 2;
+    private static final int GAME_STATE_ABILITY = 3;
     
     private static final String MENU_BACKGROUND_PATH = "assets/images/mrjackBack1.png";
     private static final String MENU_FRAME_PATH = "assets/UI/TitleFrame.png";
@@ -42,10 +57,11 @@ public class GameView extends InteractFrame{
     private static final String UNSUSPECTED_IMAGE_PATH = "assets/UI/notSuspect1.png";
     
     private static final String[] PLAYER_TITLES = {"Detective", "Mr. Jack"};
-    private static final String USER_MOVE = "MOVE";
-    private static final String USER_ABILITY = "ABILITY";
-    private static final String MENU_LABEL = "MENU";
-    private static final String USER_CANCEL = "CANCEL";
+    private static final String LABEL_USER_SELECT = "SELECT";
+    private static final String LABEL_USER_MOVE = "MOVE";
+    private static final String LABEL_USER_ABILITY = "ABILITY";
+    private static final String LABEL_MENU = "MENU";
+    private static final String LABEL_USER_CANCEL = "CANCEL";
 
 	private final int REFRESH_RATE = 1000/15;
 	private final double ANGLE_START = 2 * Math.PI / 3.0;
@@ -55,7 +71,9 @@ public class GameView extends InteractFrame{
 	GameController controller;
     Timer timer;
     String boardState;
-    int gameState;
+    int programState;		//0: Menu, 1: Game
+    int gameState;			//0: Select State (Bottom row buttons)
+    						//1: Select, 2: Move, 3: Ability, 4: Cancel (Back to 0), 5: Menu (Back to programState 0)
     
     int turnNumber;
     int currentPlayer;
@@ -188,10 +206,10 @@ public class GameView extends InteractFrame{
 		
 		for(int i = 0; i < usedCharacters.length; i++) {
 			usedCharacters[i] = sc.nextLine();
+			System.out.println(usedCharacters[i]);
 		}
 		
 		//-- Currently Selected Character  --------------------
-		
 		
 		currCharacter = sc.nextLine();
 		abilityInput = Integer.parseInt(sc.nextLine());
@@ -229,68 +247,84 @@ public class GameView extends InteractFrame{
 	}
 	
 	public void paintComponent(Graphics g) {
-		switch(gameState) {
-			case 0: drawMenu(g);
-					break;
-			case 2: drawCancel(g);
-			case 1: drawBoard(g); 
-					drawBorder(g); 
-					break;
+		switch(programState) {
+			case PROGRAM_STATE_MENU: 
+									 drawMenu(g);
+									 break;
+			case PROGRAM_STATE_GAME: 
+									 drawBoard(g); 
+									 drawBorder(g); 
+									 break;
 			default: 
-					break;
+									 break;
 		}
 	}
 
 	@Override
 	public void clickEvent() {
 		int action = getClickComponent().getSelected();
-		switch(gameState) {
-			case 0:
-				switch(action) {
-					case 0: gameState = 1; 
-							controller.conveyAction(-1, null);
-							break;
-					default: break;
-				}
-				break;
-			case 1:
-				switch(action) {
-					case -2: gameState = 0;			//Main menu
-							 break;
-					case -3: 						//Movement
-							 logInput = new ArrayList<Integer>();
-							 break;
-					case -4: 						//Ability
-							 logInput = new ArrayList<Integer>();
-							 break;
-					default: controller.conveyAction(2, new int[] {action});	//Send Tile info over for Character selection
-							 break;
-				}
-				break;
-			case 2:
-				switch(action) {
-					case -2: gameState = 0;			//Main menu
-							 break;
-					case -3: 						//Read more input - Movement
-							 if(logInput.size() >= 1) {
-								 System.out.println(logInput.get(0));
-								 controller.conveyAction(0, new int[] {logInput.get(0)});
-							 }
-							 break;
-					case -4: 						//Read more input - Ability
-							 logInput = new ArrayList<Integer>();
-							 break;
-					case -5: gameState = 1;			//Cancel action
-							 logInput = null;
-							 break;
-					default: logInput.add(action);	//Send Tile info over for Character selection
-							 break;
-				}
+		System.out.println(action);
+		switch(programState) {
+			case PROGRAM_STATE_MENU:
+			  menuEvent(action);
+			  break;
+			case PROGRAM_STATE_GAME:
+			  gameEvent(action);
+			  break;
+			default:
+			  break;
 		}
-		
 		repaint();
 	}
+	
+	private void menuEvent(int action) {
+		switch(action) {
+			case 0:	programState = PROGRAM_STATE_GAME;
+					controller.startMrJack();
+					resetClickEvent();
+					break;
+			default: break;
+		}
+	}
+	
+	private void gameEvent(int action) {
+		switch(gameState) {
+			case GAME_STATE_DEFAULT:
+				interfaceEvents(action);
+				break;
+			case GAME_STATE_SELECT:
+				controller.chooseCharacter(action);
+				gameState = GAME_STATE_DEFAULT;
+				break;
+			case GAME_STATE_MOVE:
+				break;
+			
+		}
+	}
 
+	private void interfaceEvents(int action) {
+		switch(action) {
+			case BUTTON_MENU_CODE:
+				programState = PROGRAM_STATE_MENU;
+				resetClickEvent();
+				break;
+			case BUTTON_SELECT_CODE:
+				gameState = GAME_STATE_SELECT;
+				break;
+			case BUTTON_MOVE_CODE:
+				gameState = GAME_STATE_MOVE;
+				break;
+			case BUTTON_ABILITY_CODE:
+				gameState = GAME_STATE_ABILITY;
+				break;
+			case BUTTON_CANCEL_CODE:
+				gameState = GAME_STATE_DEFAULT;
+				break;
+			default:
+				break;
+	}
+	}
+	
 	@Override
 	public void keyEvent() {
 		
@@ -299,6 +333,8 @@ public class GameView extends InteractFrame{
 	}
 	
 //---  Helper Methods   -----------------------------------------------------------------------
+	
+	//-- Menu  ------------------------------
 	
 	/**
 	 * This method draws the introductory menu at which the user can start a game
@@ -311,10 +347,13 @@ public class GameView extends InteractFrame{
 		addOwnTextScaled(SCREEN_WIDTH/2, SCREEN_HEIGHT/6, TITLE_MENU_TEXT[0], g, 8);
 		addOwnTextScaled(SCREEN_WIDTH/2, SCREEN_HEIGHT/6 + 8 * TEXT_HEIGHT, TITLE_MENU_TEXT[1], g, 4);
 		addOwnTextScaled(SCREEN_WIDTH/2, SCREEN_HEIGHT/6 + 12 * TEXT_HEIGHT, TITLE_MENU_TEXT[2], g, 2);
+		addOwnTextScaled(SCREEN_WIDTH/2, SCREEN_HEIGHT/6 + 14 * TEXT_HEIGHT, TITLE_MENU_TEXT[3], g, 1);
 		addClickPicScaled(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, MENU_FRAME_PATH, g, 0, 4);
 		addOwnTextScaled(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, "Start Game", g, 4);
 	}
 
+	//-- Game  ------------------------------
+	
 	/**
 	 * This method draws the current board's state
 	 * 
@@ -323,7 +362,6 @@ public class GameView extends InteractFrame{
 	
 	private void drawBoard(Graphics g) {
 		addPicScaledCorner(0, 0, BOARD_FRAME_PATH, g, 4);
-		int ind = 0;
 
 		int size = (int)(SCREEN_HEIGHT * 4.0 / 5.0 / height);
 		int size2 = (int)(SCREEN_WIDTH * 5.0 / 6.0 / width);
@@ -334,7 +372,7 @@ public class GameView extends InteractFrame{
 		for(DrawnTile dT : tileDrawing) {
 			if(dT == null)
 				continue;
-			drawTile(g, (int)(BOARD_CENTER_X + dT.getX() * size), (int)(BOARD_CENTER_Y + dT.getY() * size), size, dT.getType(), ind++);
+			drawTile(g, (int)(BOARD_CENTER_X + dT.getX() * size), (int)(BOARD_CENTER_Y + dT.getY() * size), size, dT.getType(), dT.getIndex());
 			for(int i = 0; i < chosenCharacters.length; i++) {
 				String[] in = chosenCharacters[i].split(" ");
 				int inde = Integer.parseInt(in[1]);
@@ -382,24 +420,28 @@ public class GameView extends InteractFrame{
 	private void drawInteraction(Graphics g) {
 		addPicScaledCorner(0, SCREEN_HEIGHT*4/5, BOTTOM_FRAME_PATH, g, 4);
 		
-		addClickPicScaled(SCREEN_WIDTH/10 - TEXT_HEIGHT, SCREEN_HEIGHT * 9 / 10, MENU_FRAME_PATH, g, -3, 2);
-		addOwnTextScaled(SCREEN_WIDTH/10 - TEXT_HEIGHT, SCREEN_HEIGHT * 9 / 10, USER_MOVE, g, 3);
+		int startX = SCREEN_WIDTH/10;
+		int spacer = SCREEN_WIDTH/4 - SCREEN_WIDTH/10 + TEXT_HEIGHT;
 		
-		addClickPicScaled(SCREEN_WIDTH/4, SCREEN_HEIGHT * 9 / 10, MENU_FRAME_PATH, g, -4, 2);
-		addOwnTextScaled(SCREEN_WIDTH/4, SCREEN_HEIGHT * 9 / 10, USER_ABILITY, g, 3);
+		//Select Character
+		addImageButton(startX, SCREEN_HEIGHT * 9 / 10, LABEL_USER_SELECT, MENU_FRAME_PATH, g, BUTTON_SELECT_CODE, 2, 3);
 		
-		addClickPicScaled(SCREEN_WIDTH * 9 / 10, SCREEN_HEIGHT * 9 / 10, MENU_FRAME_PATH, g, -2, 2);
-		addOwnTextScaled(SCREEN_WIDTH * 9 / 10, SCREEN_HEIGHT * 9 / 10, MENU_LABEL, g, 3);	
+		//Move Character
+		addImageButton(startX + spacer, SCREEN_HEIGHT * 9 / 10, LABEL_USER_MOVE, MENU_FRAME_PATH, g, BUTTON_MOVE_CODE, 2, 3);
+		
+		//Use Character Ability
+		addImageButton(startX + spacer * 2, SCREEN_HEIGHT * 9 / 10, LABEL_USER_ABILITY, MENU_FRAME_PATH, g, BUTTON_ABILITY_CODE, 2, 3);
+		
+		//Cancel Last Action (Sets all values back to default)
+		addImageButton(startX + spacer * 3, SCREEN_HEIGHT * 9 / 10, LABEL_USER_CANCEL, MENU_FRAME_PATH, g, BUTTON_CANCEL_CODE, 2, 3);
+		
+		//Menu (return to main menu/end game)
+		addImageButton(startX + spacer * 5, SCREEN_HEIGHT * 9 / 10, LABEL_MENU, MENU_FRAME_PATH, g, BUTTON_MENU_CODE, 2, 3);
 	}
 
-	private void drawCancel(Graphics g) {
-		addClickPicScaled(SCREEN_WIDTH*3/4, SCREEN_HEIGHT * 9 / 10, MENU_FRAME_PATH, g, -5, 2);
-		addOwnTextScaled(SCREEN_WIDTH*3/4, SCREEN_HEIGHT * 9 / 10, USER_CANCEL, g, 3);
-	}
-	
 	private void drawTile(Graphics g, int x, int y, int hyp, String type, int tile) {
-		drawHexagon(x, y, hyp, g, Color.black);				//Border
-		addButton(x, y, (int)(1.3 * hyp), (int)(1.3 * hyp), "", null, g, tile);		//Clickable
+		drawHexagon(x, y, hyp, g, Color.black, LINE_THICKNESS);				//Border
+		addButton(x, y, (int)(1.3 * hyp), (int)(1.3 * hyp), "", new Color(155,155,155), g, tile);		//Clickable
 		addOwnTextScaled(x, y - TEXT_HEIGHT, type, g, 2);		//Type of Tile
 		if(lit[tile])											//Is Tile lit
 			addPicScaled(x - 4 * TEXT_HEIGHT, y - 3 * TEXT_HEIGHT, LIT_TILE_IMAGE_PATH, g, 2);

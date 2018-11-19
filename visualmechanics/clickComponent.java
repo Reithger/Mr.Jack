@@ -44,6 +44,12 @@ public class clickComponent extends JComponent implements MouseListener{
 		eventSquare.add(values);
 	}
 	
+	public void resetClickRegion() {
+		System.out.println(eventSquare.size());
+		eventSquare = new ArrayList<Integer[]>();
+		System.out.println("reset");
+	}
+	
 	public void mouseClicked(MouseEvent e){
 		Integer x = e.getX();
 		Integer y = e.getY();

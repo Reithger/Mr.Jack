@@ -29,7 +29,7 @@ public class GameController {
 	GameModel theGame;
 	/** */
 	GameView theView;
-
+	
 //---  Constructors   -------------------------------------------------------------------------
 	
     public GameController(File f){
@@ -50,15 +50,19 @@ public class GameController {
     public void updateView(){
     	theView.update(theGame.outputGameState());
     }
-
-    public void conveyAction(int type, int[] actions){
-    	switch(type) {
-    		case -1: startMrJack(); break;
-    		case 0: theGame.moveMrJackCharacter(actions[0]); break;
-    		case 1: theGame.characterAction(actions); break;
-    		case 2: theGame.chooseMrJackCharacter(actions[0]); break;
-    		default: break;
-    	}
+    
+    public void moveCharacter(int newTileLocation) {
+    	theGame.moveMrJackCharacter(newTileLocation);
+    	updateView();
+    }
+    
+    public void useCharacterAbility(int[] relevantInformation) {
+    	theGame.characterAction(relevantInformation);
+    	updateView();
+    }
+    
+    public void chooseCharacter(int tilePosition) {
+    	theGame.chooseMrJackCharacter(tilePosition);
     	updateView();
     }
     

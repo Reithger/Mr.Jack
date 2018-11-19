@@ -30,6 +30,11 @@ public class InteractFrame extends JPanel{
 		setVisible(true);
 	}
 	
+	public void resetClickEvent() {
+		eventSquare = new ArrayList<Integer[]>();
+		mouseEvent.setEventSquare(eventSquare);
+	}
+	
 	public void clickEvent(){
 		System.out.println("Overwrite this method");
 	}
@@ -162,6 +167,11 @@ public class InteractFrame extends JPanel{
 		mouseEvent.setEventSquare(eventSquare);
 	}
 	
+	public void addImageButton(int x, int y, String title, String filePath, Graphics g, int key, int imageScale, int textScale) {
+		addClickPicScaled(x, y, filePath, g, key, imageScale);
+		addOwnTextScaled(x, y, title, g, textScale);
+	}
+	
 	public void addShadedRegion(int x, int y, int wid, int hei, Color col, Graphics g){
 		Color maintain = g.getColor();
 		g.setColor(col);
@@ -174,7 +184,7 @@ public class InteractFrame extends JPanel{
 		//Clicking anywhere else should de-select
 	}
 
-	public void drawHexagon(int x, int y, int distance, Graphics g, Color col) {
+	public void drawHexagon(int x, int y, int distance, Graphics g, Color col, int thick) {
 		Color maintain = g.getColor();
 		g.setColor(col);
 		double angleStart = -1 * Math.PI + Math.PI / 6.0;
@@ -183,7 +193,9 @@ public class InteractFrame extends JPanel{
 			int x2 = x + (int)(distance * Math.sin(angleStart + ((i + 1) / (double)3) * Math.PI));
 			int y1 = y + (int)(distance * Math.cos(angleStart + (i / (double)3) * Math.PI));
 			int y2 = y + (int)(distance * Math.cos(angleStart + ((i + 1) / (double)3) * Math.PI));
-			g.drawLine(x1, y1, x2, y2);
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setStroke(new BasicStroke(thick));
+			g2.drawLine(x1, y1, x2, y2);
 		}
 		g.setColor(maintain);
 	}
