@@ -30,6 +30,10 @@ public class GameController {
 	/** */
 	GameView theView;
 	
+	boolean choseCharacter;
+	boolean movedCharacter;
+	boolean usedAbility;
+	
 //---  Constructors   -------------------------------------------------------------------------
 	
     public GameController(File f){
@@ -52,18 +56,45 @@ public class GameController {
     }
     
     public void moveCharacter(int newTileLocation) {
-    	theGame.moveMrJackCharacter(newTileLocation);
+    	if(movedCharacter)
+    		updateView();
+    	movedCharacter = theGame.moveMrJackCharacter(newTileLocation); 
     	updateView();
+    	restartCharacterUse();
     }
     
     public void useCharacterAbility(int[] relevantInformation) {
-    	theGame.characterAction(relevantInformation);
+    	if(usedAbility)
+    		updateView();
+    	usedAbility = theGame.characterAction(relevantInformation);
     	updateView();
+    	restartCharacterUse();
     }
     
     public void chooseCharacter(int tilePosition) {
-    	theGame.chooseMrJackCharacter(tilePosition);
+    	if(choseCharacter)
+    		updateView();
+    	choseCharacter = theGame.chooseMrJackCharacter(tilePosition);
     	updateView();
+    }
+    
+    public void restartCharacterUse() {
+    	if(endCharacterUse()) {
+    		choseCharacter = false;
+	    	movedCharacter = false;
+	    	usedAbility = false;
+	    }
+    }
+    
+    public void endTurn() { 
+    	theGame.endTurn();
+    	choseCharacter = false;
+    	movedCharacter = false;
+    	usedAbility = false;
+    }
+    
+    private boolean endCharacterUse() {
+    	return choseCharacter && movedCharacter && usedAbility;
     }
     
 //---  Helper Methods   -----------------------------------------------------------------------

@@ -253,6 +253,7 @@ public class GameModel {
 		int count = 0;
 		
 		for(int i : selectedMrJackCharacters) {
+			System.out.println("Spot: " + i);
 			count++;
 			out += usedMrJackCharacters[i].getShortName() + "\n";
 		}

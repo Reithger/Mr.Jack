@@ -441,7 +441,7 @@ public class GameView extends InteractFrame{
 
 	private void drawTile(Graphics g, int x, int y, int hyp, String type, int tile) {
 		drawHexagon(x, y, hyp, g, Color.black, LINE_THICKNESS);				//Border
-		addButton(x, y, (int)(1.3 * hyp), (int)(1.3 * hyp), "", new Color(155,155,155), g, tile);		//Clickable
+		addButton(x, y, (int)(1.3 * hyp), (int)(1.3 * hyp), "", null, g, tile);		//Clickable
 		addOwnTextScaled(x, y - TEXT_HEIGHT, type, g, 2);		//Type of Tile
 		if(lit[tile])											//Is Tile lit
 			addPicScaled(x - 4 * TEXT_HEIGHT, y - 3 * TEXT_HEIGHT, LIT_TILE_IMAGE_PATH, g, 2);
