@@ -126,9 +126,9 @@ public class GameModel {
 	public boolean chooseMrJackCharacter(int choice) {
 		int loc = -1;
 		for(MrJackCharacter mjc : usedMrJackCharacters) {
-			if(selectedMrJackCharacters.contains(mjc.getLocation()))
-				continue;
 			loc++;
+			if(selectedMrJackCharacters.contains(loc))
+				continue;
 			if(mjc.getLocation() == choice) {
 				currentMrJackCharacter = mjc;
 				break;
@@ -136,7 +136,7 @@ public class GameModel {
 		}
 		if(currentMrJackCharacter == null)
 			return false;
-		selectedMrJackCharacters.add(currentMrJackCharacter.getLocation());
+		selectedMrJackCharacters.add(loc);
 		return true;
 	}
 
@@ -255,13 +255,8 @@ public class GameModel {
 		int count = 0;
 		
 		for(int i : selectedMrJackCharacters) {
-			for(MrJackCharacter mjc : activeMrJackCharacters) {
-				if(mjc.getLocation() == i) {
-					out += mjc.getShortName() + "\n";
-					count++;
-					break;
-				}
-			}
+			out += usedMrJackCharacters[i].getShortName() + "\n";
+			count++;
 		}
 		
 		while(count < usedMrJackCharacters.length) {

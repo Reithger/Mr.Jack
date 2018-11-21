@@ -216,8 +216,6 @@ public class GameView extends InteractFrame{
 		
 		//-- Active Character Abilities  ----------------------
 		
-		System.out.println(code);
-		
 		String val = sc.nextLine();
 		if(!val.equals("null")) {
 			abilityPermissions = new boolean[Integer.parseInt(val)];
@@ -438,9 +436,13 @@ public class GameView extends InteractFrame{
 		
 		size = size > 75 ? 75 : size;
 		
+		System.out.println("Work \n");
+		
 		for(DrawnTile dT : tileDrawing) {
 			if(dT == null)
 				continue;
+			
+			System.out.println(dT.getX() + " " + dT.getY());
 			drawTile(g, (int)(BOARD_CENTER_X + dT.getX() * size), (int)(BOARD_CENTER_Y + dT.getY() * size), size, dT.getType(), dT.getIndex());
 			for(int i = 0; i < chosenCharacters.length; i++) {
 				String[] in = chosenCharacters[i].split(" ");
