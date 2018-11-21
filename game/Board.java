@@ -75,10 +75,10 @@ public class Board {
 			for(int index : top.getNeighbors()) {
 				if(index == -1)
 					continue;
-				if(dist.get(index) == null) {
+				if(dist.get(index) == null && mover.canMove(tiles[index], dist.get(top.getLocation()) + 1)) {
 					dist.put(index, dist.get(top.getLocation()) + 1);
 					queue.add(tiles[index]);
-					reachable[index] = dist.get(index) <= maxDist;
+					reachable[index] = dist.get(index) <= maxDist && tiles[index].canShare();
 					for(int i : characterLocations) {
 						if(index == i)
 							reachable[index] = false;

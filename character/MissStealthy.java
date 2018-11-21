@@ -17,6 +17,8 @@ public class MissStealthy extends MrJackCharacter{
 	private static final int NUM_MOVES = 4;
 	/** Constant String object representing the shorthand name for this MrJackCharacter object*/
 	private static final String SHORT_NAME = "M.S";
+	
+	private static final char[] CANNOT_MOVE_THROUGH = new char[0];
 
 // --- Instance Variables ---------------------------------------------------------------------
 	
@@ -36,22 +38,18 @@ public class MissStealthy extends MrJackCharacter{
 //---  Operations   ---------------------------------------------------------------------------
 	
 	public boolean canMove(Tile tile, int dist) {
-		Tile[] tempChoice = new Tile[1];
-		tempChoice[0] = tile;
-		if((this.ability(tempChoice))&& dist <= numMoves){
+		if((this.ability(tile))&& dist <= numMoves){
 			return true;
 		} else return false;
 	}
 
 	@Override
-	public boolean ability(Tile[] choice) {
-		//if it's a building tile, she can move through it!
-		for(Tile tile: choice){
-			if ((tile.getIdentity() == 'b')||(tile.getIdentity() == 'm')||(tile.getIdentity() == 't')){
-				return true;
-			}
+	public boolean ability(Tile ... choice) {
+		for(char c : CANNOT_MOVE_THROUGH){
+			if (choice[0].getIdentity() == c)
+				return false;
 		}
-		return false;
+		return true;
 	}
 
 	@Override

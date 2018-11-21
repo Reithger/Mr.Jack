@@ -55,7 +55,9 @@ public class GameView extends InteractFrame{
     private static final String REACHABLE_TILE_IMAGE_PATH = "assets/UI/reachableTile1.png ";
     private static final String SUSPECT_IMAGE_PATH = "assets/UI/suspect1.png";
     private static final String UNSUSPECTED_IMAGE_PATH = "assets/UI/notSuspect1.png";
-    
+    private static final String CHARACTER_ACTION_DONE_IMAGE_PATH = "assets/UI/actionCompleted.png";
+    private static final String CHARACTER_ACTION_NOT_DONE_IMAGE_PATH = "assets/UI/reachableTile1.png"; 
+    		
     private static final String[] PLAYER_TITLES = {"Detective", "Mr. Jack"};
     private static final String LABEL_USER_SELECT = "SELECT";
     private static final String LABEL_USER_MOVE = "MOVE";
@@ -146,9 +148,8 @@ public class GameView extends InteractFrame{
 			DrawnTile nextTile = reference.get(index) == null ? new DrawnTile(0, 0, identity, index) : reference.get(index);
 			if(reference.get(index) == null)
 				reference.put(index, nextTile);
-			if(nextTile.getType() == null) {
+			if(nextTile.getType() == null)
 				nextTile.setType(identity);
-			}
 			tileDrawing[i] = nextTile;
 			
 			for(int j = 0; j < numNeigh; j++) {
@@ -335,15 +336,15 @@ public class GameView extends InteractFrame{
 						logInput[i] = -1;
 				}
 				for(int i = 0; i < logInput.length; i++)
-					if(logInput[i] == -1) {
+					if(logInput[i] == -1 && action >= 0) {
 						logInput[i] = action;
 						break;
 					}
 				
 				if(logInput[logInput.length-1] != -1) {
-					boolean resultAbility = controller.useCharacterAbility(logInput);
+					controller.useCharacterAbility(logInput);
 					logInput = null;
-					gameState = resultAbility ? GAME_STATE_DEFAULT : gameState;
+					gameState = GAME_STATE_DEFAULT;
 				}
 				
 				if(!abilityPermissions[4] && controller.getUsedAbility()) {
@@ -399,6 +400,10 @@ public class GameView extends InteractFrame{
 		}
 	}
 	
+	public boolean allCharactersUsed() {
+		return !usedCharacters[usedCharacters.length-1].equals("-");
+	}
+	
 //---  Helper Methods   -----------------------------------------------------------------------
 	
 	//-- Menu  ------------------------------
@@ -436,15 +441,13 @@ public class GameView extends InteractFrame{
 		
 		size = size > 75 ? 75 : size;
 		
-		System.out.println("Work \n");
-		
 		for(DrawnTile dT : tileDrawing) {
 			if(dT == null)
 				continue;
 			
-			System.out.println(dT.getX() + " " + dT.getY());
-			drawTile(g, (int)(BOARD_CENTER_X + dT.getX() * size), (int)(BOARD_CENTER_Y + dT.getY() * size), size, dT.getType(), dT.getIndex());
+			drawTile(g, (int)(BOARD_CENTER_X + dT.getX() * size), (int)(BOARD_CENTER_Y + dT.getY() * size), size, dT.getType(), dT.getIndex(), dT.getState());
 			for(int i = 0; i < chosenCharacters.length; i++) {
+				System.out.println("Chose: " + chosenCharacters[i]);
 				String[] in = chosenCharacters[i].split(" ");
 				int inde = Integer.parseInt(in[1]);
 				addOwnTextScaled((int)(BOARD_CENTER_X + tileDrawing[inde].getX() * size), (int)(BOARD_CENTER_Y + tileDrawing[inde].getY() * size) + TEXT_HEIGHT * 2, in[0], g, 2);
@@ -477,7 +480,13 @@ public class GameView extends InteractFrame{
 		addOwnTextScaled(SCREEN_WIDTH*11/12, SCREEN_HEIGHT / 10 + TEXT_HEIGHT * 2, turnNumber + "", g, 3);
 		addOwnTextScaled(SCREEN_WIDTH*11/12, SCREEN_HEIGHT / 5, PLAYER_TITLES[currentPlayer], g, 3);
 		
-		for(int i = 0; i < 4; i++) {
+		boolean[] characterProgress = new boolean[] {controller.getSelectedCharacter(), controller.getHasMovedCharacter(), controller.getUsedAbility()};
+		
+		for(int i = 0; i < characterProgress.length; i++) {
+			addPicScaled(SCREEN_WIDTH * 11/12 + (characterProgress.length / 2 - i) * -1 * SCREEN_WIDTH / 24, SCREEN_HEIGHT / 5 + TEXT_HEIGHT * 5, characterProgress[i] ? CHARACTER_ACTION_DONE_IMAGE_PATH : CHARACTER_ACTION_NOT_DONE_IMAGE_PATH, g, 1);
+		}
+		
+		for(int i = 0; i < usedCharacters.length; i++) {
 			if(currentPlayer == 0)
 				addPicScaled(SCREEN_WIDTH*11/12, SCREEN_HEIGHT / 5 + SCREEN_HEIGHT / 8 * (i + 1), i == 0 || i == 3 ? BANNER_PATH_GOLD : BANNER_PATH_COPPER, g, 4);
 			else if(currentPlayer == 1)
@@ -510,14 +519,21 @@ public class GameView extends InteractFrame{
 		addImageButton(startX + spacer * 5, SCREEN_HEIGHT * 9 / 10, LABEL_MENU, MENU_FRAME_PATH, g, BUTTON_MENU_CODE, 2, 3);
 	}
 
-	private void drawTile(Graphics g, int x, int y, int hyp, String type, int tile) {
+	private void drawTile(Graphics g, int x, int y, int hyp, String type, int tile, boolean state) {
 		drawHexagon(x, y, hyp, g, Color.black, LINE_THICKNESS);				//Border
-		addButton(x, y, (int)(1.3 * hyp), (int)(1.3 * hyp), "", new Color(155, 155, 155), g, tile);		//Clickable
+		addButton(x, y, (int)(1.3 * hyp), (int)(1.3 * hyp), "", null, g, tile);		//Clickable
 		addOwnTextScaled(x, y - TEXT_HEIGHT, type, g, 2);		//Type of Tile
+		addOwnTextScaled(x - TEXT_HEIGHT * 4, y - TEXT_HEIGHT * 6, tile + "", g, 1);		//Tile index value, debugging mostly
 		if(lit[tile])											//Is Tile lit
 			addPicScaled(x - 4 * TEXT_HEIGHT, y - 3 * TEXT_HEIGHT, LIT_TILE_IMAGE_PATH, g, 2);
 		if(reachable[tile] && controller.canMove())					//Is Tile reachable
 			addPicScaled(x + 4 * TEXT_HEIGHT, y - 3 * TEXT_HEIGHT, REACHABLE_TILE_IMAGE_PATH, g, 2);
+		switch(type) {
+			case "l": addOwnTextScaled(x, y + TEXT_HEIGHT * 5, state ? "On" : "Off", g , 2); break;
+			case "m": addOwnTextScaled(x, y + TEXT_HEIGHT * 5, state ? "Closed" : "Open", g , 2); break;
+			case "e": addOwnTextScaled(x, y + TEXT_HEIGHT * 5, state ? "Blocked" : "Open", g , 2); break;
+			default: 
+		}
 	}
 		
 	private double changeInX(double angle, double hyp) {

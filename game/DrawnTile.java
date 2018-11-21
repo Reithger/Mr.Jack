@@ -33,6 +33,10 @@ public class DrawnTile {
 		return index;
 	}
 	
+	public boolean getState() {
+		return state;
+	}
+	
 	public void setX(double in) {
 		x = in;
 	}

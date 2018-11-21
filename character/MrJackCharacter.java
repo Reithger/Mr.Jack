@@ -64,7 +64,7 @@ public abstract class MrJackCharacter {
 	 * @return - returns a boolean value representing whether or not performing this ability was successful/legal or not.
 	 */
 	
-	public abstract boolean ability(Tile[] choice);
+	public abstract boolean ability(Tile ... choice);
 	
 	/**
 	 * This method parses the provided Board object to transform that data into

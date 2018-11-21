@@ -35,10 +35,14 @@ public class Clock {
 	 * @param lanternLimit - int value representing the number of Lanterns to turn off as the game progresses.
 	 */
 	
-	public Clock(Tile[] givenLanterns, int lanternLimit) {
+	public Clock(Tile[] givenLanterns, int lanternLimit, int lanternsOffStart) {
 		lanterns = givenLanterns;
 		turnValue = 0;
 		maxLanternsOff = lanternLimit;
+		lanternsOffStart = lanternsOffStart < 1 ? 1 : lanternsOffStart;
+		for(int i = lanterns.length - 1; i >= lanterns.length - lanternsOffStart; i--) {
+			((Lantern)(lanterns[i])).setLight(false);
+		}
 	}
 
 //---  Operations   ---------------------------------------------------------------------------

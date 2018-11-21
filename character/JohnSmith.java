@@ -53,17 +53,23 @@ public class JohnSmith extends MrJackCharacter {
 		Lantern off = null;
 		for(Lantern t : relevantTiles) {
 			if(t.getLocation() == choice[0].getLocation()) {
-				on = t;
+				if(t.getLight())
+					on = t;
+				else
+					off = t;
 			}
 			if(t.getLocation() == choice[1].getLocation()) {
-				off = t;
+				if(t.getLight())
+					on = t;
+				else
+					off = t;
 			}
 		}
 		if(on == null || off == null)
 			return false;
 		else {
-			on.setLight(true);
-			off.setLight(false);
+			on.setLight(false);
+			off.setLight(true);
 			return true;
 		}
 	}
