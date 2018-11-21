@@ -186,6 +186,16 @@ public abstract class MrJackCharacter {
 	
 	public abstract int requiredValuesForAbility();
 
+	public boolean[] abilityPermissionArray() {
+		boolean[] out = new boolean[5];
+		out[0] = hasToDoAbility();
+		out[1] = canDoAbilityBefore();
+		out[2] = canDoAbilityDuring();
+		out[3] = canDoAbilityAfter();
+		out[4] = canMoveAfterAbility();
+		return out;
+	}
+	
 	/**
 	 * This abstract method describes whether or not this MrJackCharacter is required to use their
 	 * ability or not.

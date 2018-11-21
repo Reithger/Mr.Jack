@@ -124,12 +124,11 @@ public class GameModel {
 	 */
 	
 	public boolean chooseMrJackCharacter(int choice) {
-		if(selectedMrJackCharacters.contains(choice))
-			return false;
 		int loc = -1;
 		for(MrJackCharacter mjc : usedMrJackCharacters) {
+			if(selectedMrJackCharacters.contains(mjc.getLocation()))
+				continue;
 			loc++;
-			System.out.println(mjc.getLocation() + " " + choice);
 			if(mjc.getLocation() == choice) {
 				currentMrJackCharacter = mjc;
 				break;
@@ -137,8 +136,7 @@ public class GameModel {
 		}
 		if(currentMrJackCharacter == null)
 			return false;
-		System.out.println(currentMrJackCharacter);
-		selectedMrJackCharacters.add(loc);
+		selectedMrJackCharacters.add(currentMrJackCharacter.getLocation());
 		return true;
 	}
 
@@ -151,8 +149,7 @@ public class GameModel {
 	 */
 	
 	public boolean moveMrJackCharacter(int choice) {
-		boolean[] reachable = board.getLegalMovement(currentMrJackCharacter);
-		System.out.println(Arrays.toString(reachable));
+		boolean[] reachable = board.getLegalMovement(currentMrJackCharacter, getCharacterLocations());
 		if(reachable[choice]) {
 			currentMrJackCharacter.setLocation(choice);
 		}
@@ -192,6 +189,10 @@ public class GameModel {
 		return detective.hasWonAccusation(accused);
 	}
 
+	public void clearCurrentCharacter() {
+		currentMrJackCharacter = null;
+	}
+	
 	/**
 	 * This method handles the ending of a turn, setting up for the next batch of MrJackCharacters
 	 * to be selected, iterating the turn counter, deriving which positions are 'lit' for deciding
@@ -254,8 +255,13 @@ public class GameModel {
 		int count = 0;
 		
 		for(int i : selectedMrJackCharacters) {
-			count++;
-			out += usedMrJackCharacters[i].getShortName() + "\n";
+			for(MrJackCharacter mjc : activeMrJackCharacters) {
+				if(mjc.getLocation() == i) {
+					out += mjc.getShortName() + "\n";
+					count++;
+					break;
+				}
+			}
 		}
 		
 		while(count < usedMrJackCharacters.length) {
@@ -270,10 +276,23 @@ public class GameModel {
 		else
 			out += "null\n-1\n";
 		
+		//-- Active Character Abilities  ----------------------
+		
+		if(currentMrJackCharacter != null) {
+			boolean[] abilityPermissions = currentMrJackCharacter.abilityPermissionArray();
+			out += abilityPermissions.length + "\n";
+			for(int i = 0; i < abilityPermissions.length; i++) {
+				out += (abilityPermissions[i] ? "1" : "0") + (i + 1 < abilityPermissions.length ? " " : "\n" );
+			}
+		}
+		else {
+			out += "null\n-1\n";
+		}
+		
 		//-- Reachable Tiles  ---------------------------------
 		
 													//Active character, reach, ability
-		boolean[] reach = board.getLegalMovement(currentMrJackCharacter);
+		boolean[] reach = board.getLegalMovement(currentMrJackCharacter, getCharacterLocations());
 		
 
 		

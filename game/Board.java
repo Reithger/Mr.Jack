@@ -56,7 +56,7 @@ public class Board {
 	 * @return
 	 */
 	
-	public boolean[] getLegalMovement(MrJackCharacter mover) {
+	public boolean[] getLegalMovement(MrJackCharacter mover, int[] characterLocations) {
 		boolean[] reachable = new boolean[tiles.length];
 		
 		if(mover == null)
@@ -79,6 +79,10 @@ public class Board {
 					dist.put(index, dist.get(top.getLocation()) + 1);
 					queue.add(tiles[index]);
 					reachable[index] = dist.get(index) <= maxDist;
+					for(int i : characterLocations) {
+						if(index == i)
+							reachable[index] = false;
+					}
 				}
 			}	
 		}

@@ -59,6 +59,7 @@ public class GameController {
     
     public void updateView(){
     	theView.update(theGame.outputGameState());
+    	System.out.println(choseCharacter + " " + movedCharacter + " " + usedAbility);
     }
     
     public boolean moveCharacter(int newTileLocation) {
@@ -98,6 +99,7 @@ public class GameController {
     		choseCharacter = false;
 	    	movedCharacter = false;
 	    	usedAbility = false;
+	    	theGame.clearCurrentCharacter();
 	    }
     }
     
@@ -114,6 +116,22 @@ public class GameController {
     
     public boolean canMove() {
     	return !movedCharacter;
+    }
+    
+    public boolean getHasMovedCharacter() {
+    	return movedCharacter;
+    }
+    
+    public boolean getUsedAbility() {
+    	return usedAbility;
+    }
+    
+    public void cannotMove() {
+    	movedCharacter = true;
+    }
+    
+    public void cannotDoAbility() {
+    	usedAbility = true;
     }
     
 //---  Helper Methods   -----------------------------------------------------------------------

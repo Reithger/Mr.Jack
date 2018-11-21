@@ -87,6 +87,7 @@ public class GameView extends InteractFrame{
     boolean[] reachable;
     boolean[] lit;
     boolean[] suspect;
+    boolean[] abilityPermissions;//0: Has to do ability, 1: Can do before moving, 2: Can do during, 3: Can do After, 4: Can Move After
     String[] chosenCharacters;
     String[] usedCharacters;
     String currCharacter;
@@ -206,13 +207,29 @@ public class GameView extends InteractFrame{
 		
 		for(int i = 0; i < usedCharacters.length; i++) {
 			usedCharacters[i] = sc.nextLine();
-			System.out.println(usedCharacters[i]);
 		}
 		
 		//-- Currently Selected Character  --------------------
 		
 		currCharacter = sc.nextLine();
 		abilityInput = Integer.parseInt(sc.nextLine());
+		
+		//-- Active Character Abilities  ----------------------
+		
+		System.out.println(code);
+		
+		String val = sc.nextLine();
+		if(!val.equals("null")) {
+			abilityPermissions = new boolean[Integer.parseInt(val)];
+			String line = sc.nextLine();
+			String[] vals = line.split(" ");
+			for(int i = 0; i < vals.length; i++) {
+				abilityPermissions[i] = (vals[i].equals("1") ? true : false);
+			}
+		}
+		else {
+			sc.nextLine();
+		}
 		
 		//-- Reachable Tiles  ---------------------------------
 		
@@ -288,6 +305,9 @@ public class GameView extends InteractFrame{
 	}
 	
 	private void gameEvent(int action) {
+		if(action == BUTTON_CANCEL_CODE) {
+			gameState = GAME_STATE_DEFAULT;
+		}
 		switch(gameState) {
 			case GAME_STATE_DEFAULT:
 				interfaceEvents(action);
@@ -297,10 +317,20 @@ public class GameView extends InteractFrame{
 				gameState = resultChoose ? GAME_STATE_DEFAULT : gameState;
 				break;
 			case GAME_STATE_MOVE:
+				if(!abilityPermissions[4] && controller.getUsedAbility()) {
+					controller.cannotMove();
+				}
 				controller.moveCharacter(action);
 				gameState = GAME_STATE_DEFAULT;
 				break;
 			case GAME_STATE_ABILITY:
+				if(!abilityPermissions[3] && controller.getHasMovedCharacter()) {
+					controller.cannotDoAbility();
+					gameState = GAME_STATE_DEFAULT;
+					controller.restartCharacterUse();
+					break;
+				}
+				
 				if(logInput == null) {
 					logInput = new int[abilityInput];
 					for(int i = 0; i < logInput.length; i++)
@@ -318,8 +348,16 @@ public class GameView extends InteractFrame{
 					gameState = resultAbility ? GAME_STATE_DEFAULT : gameState;
 				}
 				
+				if(!abilityPermissions[4] && controller.getUsedAbility()) {
+					controller.cannotMove();
+					gameState = GAME_STATE_DEFAULT;
+					controller.restartCharacterUse();
+					controller.updateView();
+				}
+				
 				break;
 		}
+		controller.updateView();
 	}
 
 	private void interfaceEvents(int action) {
@@ -351,6 +389,16 @@ public class GameView extends InteractFrame{
 		
 		
 		repaint();
+	}
+	
+	public void controllerUpdate() {
+		if(abilityPermissions == null)
+			return;
+		if(!abilityPermissions[3] && controller.getHasMovedCharacter()) {
+			controller.cannotDoAbility();
+			controller.restartCharacterUse();
+			controller.updateView();
+		}
 	}
 	
 //---  Helper Methods   -----------------------------------------------------------------------
