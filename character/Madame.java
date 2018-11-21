@@ -7,6 +7,7 @@ import game.GameModel;
 import tile.Manhole;
 import tile.Tile;
 
+
 public class Madame extends MrJackCharacter{
 	//---  Constant Values   ----------------------------------------------------------------------
 	
