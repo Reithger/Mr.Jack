@@ -30,21 +30,21 @@ public class Board {
 //---  Instance Variables   -------------------------------------------------------------------
 
 	/** Tile[] object containing a list of Tile objects representing the Mr. Jack game's board*/
-	Tile[] tiles;
+	Tile[] mapTiles;
 	
 //---  Constructors   -------------------------------------------------------------------------
 	
-	/**
-	 * Constructor for Board objects that derives the contents of its Tile[] from the provided
+	/** Constructor for Board objects that derives the contents of its Tile[] from the provided
 	 * information in the format of individual String objects.
 	 * 
 	 * @param boardDesign - String[] object describing 
 	 */
 	
 	public Board(String[] boardDesign) {
-		tiles = new Tile[Integer.parseInt(boardDesign[0].split(" ")[0])];
-		for(int i = 1; i < boardDesign.length; i++)
-			tiles[i - 1] = interpretInput(boardDesign[i]);
+		mapTiles = new Tile[Integer.parseInt(boardDesign[0])];
+		for(int i = 1; i < boardDesign.length; i++) {
+			mapTiles[i - 1] = initializeTile(boardDesign[i]);
+		}
 	}
 	
 //---  Operations   ---------------------------------------------------------------------------
@@ -52,55 +52,66 @@ public class Board {
 	/**
 	 * 
 	 * 
-	 * @param mover
+	 * @param activeCharacter
 	 * @return
 	 */
-	
-	public boolean[] getLegalMovement(MrJackCharacter mover, int[] characterLocations) {
-		boolean[] reachable = new boolean[tiles.length];
+	//-------related to character------
+	public boolean[] getLegalMovements(MrJackCharacter activeCharacter, int[] characterLocations) {
+		boolean[] validDestinationTiles = new boolean[mapTiles.length];
 		
-		if(mover == null)
-			return reachable;
+		if(activeCharacter == null)
+			return validDestinationTiles;
 		
 		HashMap<Integer, Integer> dist = new HashMap<Integer, Integer>();
 		LinkedList<Tile> queue = new LinkedList<Tile>();
-		int maxDist = mover.getDistance();
-		queue.add(tiles[mover.getLocation()]);
-		dist.put(mover.getLocation(), 0);
-		reachable[mover.getLocation()] = false;
+		int maxDist = activeCharacter.getDistance();
+		
+		//-----------------activeCharLocationRel
+		int activeCharLocation=activeCharacter.getLocation();
+		//
+		queue.add(mapTiles[activeCharLocation]);
+		dist.put(activeCharLocation, 0);
+		validDestinationTiles[activeCharLocation] = false;
+		//-----------------
+		
+		
+		/* getting active character location
+		 * adding this character location to the queue
+		 * adding tile location, and distance from current location to the hashmap
+		 * marking the current location as an invalid destination
+		 * */
 
 		while(!queue.isEmpty()) {
 			Tile top = queue.poll();
 			
-			for(int index : top.getNeighbors()) {
-				if(index == -1)
+			for(int index : top.getNeighbors()) {  //neighbours of the current tile 
+				if(index == -1) 
 					continue;
 				if(dist.get(index) == null) {
 					dist.put(index, dist.get(top.getLocation()) + 1);
-					queue.add(tiles[index]);
-					reachable[index] = dist.get(index) <= maxDist;
+					queue.add(mapTiles[index]);
+					validDestinationTiles[index] = dist.get(index) <= maxDist;
 					for(int i : characterLocations) {
 						if(index == i)
-							reachable[index] = false;
-					}
-				}
-			}	
-		}
+							validDestinationTiles[index] = false;
+					}//for i
+				}//if
+			}//for index	
+		}//while
 		
-		return reachable;
-	}
+		return validDestinationTiles;
+	}//getLegalMovements
 	
 	/**
-	 * 
 	 * Format: [index #] [identity char] [neighbors # # # # # #] [optional: state]
 	 * 
 	 * @return
 	 */
 	
 	public String convertToOutboundFormat() {
-		String out = tiles.length + " " + tiles[0].getNeighbors().length + " " + "\n";
+		String out = mapTiles.length + " " + mapTiles[0].getNeighbors().length + " " + "\n";
 		int loc = 0;
-		for(Tile t : tiles) {
+		for(Tile t : mapTiles) {
 			out += (loc++) + " " + t.getIdentity();
 			for(int i : t.getNeighbors()) {
 				out += " " + i;
@@ -113,7 +124,6 @@ public class Board {
 			}
 			out += "\n";
 		}
-		
 		return out;
 	}
 	
@@ -123,98 +133,88 @@ public class Board {
 	 * @return
 	 */
 	
-	public Tile getTile(int index) {
-		return tiles[index];
+	public Tile getTileAtLocation(int index) {
+		return mapTiles[index];
 	}
 	
 //---  Getter Methods   -----------------------------------------------------------------------
 
 	/**
+	 * This method returns an array containing all the tiles of the specified type.
 	 * 
-	 * @param key
+	 * @param tileType
 	 * @return
 	 */
 	
-	public Tile[] getTiles(char key) {
-		ArrayList<Tile> matchTiles = new ArrayList<Tile>();
-		for(Tile t : tiles) {
-			if(t.getIdentity() == key) {
-				matchTiles.add(t);
-			}
+	public Tile[] getTilesOfType(char tileType) {
+		ArrayList<Tile> correctTiles = new ArrayList<Tile>();
+		for(Tile t : mapTiles) {
+			if(t.getIdentity() == tileType) 
+				correctTiles.add(t);
 		}
-		Tile[] out = new Tile[matchTiles.size()];
-		for(int i = 0; i < matchTiles.size(); i++) {
-			out[i] = matchTiles.get(i);
-		}
-		
-		return out;
-	}
+		return correctTiles.toArray(new Tile[correctTiles.size()]);
+	}//getTilesOfType
 
 	/**
-	 * 
 	 * @param index
 	 * @return
 	 */
 	
 	public char getTileIdentity(int index) {
-		return tiles[index].getIdentity();
+		return mapTiles[index].getIdentity();
 	}
 
-	/**
-	 * 
-	 * 
+	/** 
 	 * @return
 	 */
 	
-	public boolean[] getLitTiles(int[] charLoc) {
-		boolean[] whoIsLit = new boolean[tiles.length];
+	public boolean[] getLitTiles(int[] charLocations) {
+		boolean[] witnessedChars = new boolean[mapTiles.length];
 		
-		for(Tile t : getTiles('l')) {
+		for(Tile t : getTilesOfType('l')) {//checks which tiles are lit up
 			if(((Lantern)t).getLight()) {
 				for(int i : t.getNeighbors()) {
 					if(i != -1)
-						whoIsLit[i] = true;
+						witnessedChars[i] = true;
 				}
 			}
 		}
 		
-		for(int loc : charLoc) {
-			for(int adj : tiles[loc].getNeighbors()) {
-				for(int locTwo : charLoc) {
-					if(locTwo == adj) {
-						whoIsLit[loc] = true;
-						whoIsLit[locTwo] = true;
+		for(int charLoc : charLocations) {
+			for(int adj : mapTiles[charLoc].getNeighbors()) {
+				for(int neighbourCharLoc : charLocations) {
+					if(neighbourCharLoc == adj) {
+						witnessedChars[charLoc] = true;
+						witnessedChars[neighbourCharLoc] = true;
 					}
 				}
 			}
 			
 		}
 		
-		return whoIsLit;
+		
+		return witnessedChars;
 	}
 
 	/**
-	 * 
-	 * @param indexes
+	 * @param indices
 	 * @return
 	 */
 	
-	public Tile[] getTiles(int[] indexes) {
-		Tile[] out = new Tile[indexes.length];
-		for(int i = 0; i < indexes.length; i++) {
-			out[i] = tiles[indexes[i]];
+	public Tile[] getTiles(int[] indices) {  // does this get used?
+		Tile[] out = new Tile[indices.length];
+		for(int i = 0; i < indices.length; i++) {
+			out[i] = mapTiles[indices[i]];
 		}
 		return out;
 	}
 	
-	/**
-	 * 
-	 * 
+	/** 
 	 * @return
 	 */
 	
 	public int getNumberOfTiles() {
-		return tiles.length;
+		return mapTiles.length;
 	}
 	
 //---  Helper Methods   ---------------------------------------------------------------------------
@@ -223,37 +223,37 @@ public class Board {
 	 * 
 	 * Input Format: [#] [char] [# # # # # #]
 	 * 
-	 * @param in
+	 * @param newTileInfo
 	 * @return
 	 */
 	
-	private Tile interpretInput(String in) {
-		String[] detes = in.split(" ");
+	private Tile initializeTile(String newTileInfo) {
+		String[] tileSpecs = newTileInfo.split(" ");
 		
-		int[] neighbors = new int[detes.length - 2];
-		for(int i = 2; i < detes.length; i++) {
-			neighbors[i-2] = Integer.parseInt(detes[i]);
+		int[] neighbors = new int[tileSpecs.length - 2];
+		for(int i = 2; i < tileSpecs.length; i++) {
+			neighbors[i-2] = Integer.parseInt(tileSpecs[i]); //assigning neighbours to tile
 		}
 		
-		switch(detes[1]) {
+		switch(tileSpecs[1]) {//creating the appropriate tile type and setting its neighbours
 			case "l":
-				Lantern lant = new Lantern(Integer.parseInt(detes[0]));
+				Lantern lant = new Lantern(Integer.parseInt(tileSpecs[0]));
 				lant.assignNeighbors(neighbors);
 				return lant;
 			case "m":
-				Manhole man = new Manhole(Integer.parseInt(detes[0]));
-				man.assignNeighbors(neighbors);
-				return man;
+				Manhole manhole = new Manhole(Integer.parseInt(tileSpecs[0]));
+				manhole.assignNeighbors(neighbors);
+				return manhole;
 			case "e":
-				Exit exi = new Exit(Integer.parseInt(detes[0]));
-				exi.assignNeighbors(neighbors);
-				return exi;
+				Exit exit = new Exit(Integer.parseInt(tileSpecs[0]));
+				exit.assignNeighbors(neighbors);
+				return exit;
 			case "b":
-				Building build = new Building(Integer.parseInt(detes[0]));
+				Building build = new Building(Integer.parseInt(tileSpecs[0]));
 				build.assignNeighbors(neighbors);
 				return build;
 			case "r":
-				Road rd = new Road(Integer.parseInt(detes[0]));
+				Road rd = new Road(Integer.parseInt(tileSpecs[0]));
 				rd.assignNeighbors(neighbors);
 				return rd;
 			default:

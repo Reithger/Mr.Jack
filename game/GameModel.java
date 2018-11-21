@@ -95,7 +95,7 @@ public class GameModel {
 			mjc.setLit(false);
 			mjc.deriveFromModel(this);
 			int loc = rand.nextInt(board.getNumberOfTiles());
-			while(used.contains(loc) || !board.getTile(loc).canShare()) {
+			while(used.contains(loc) || !board.getTileAtLocation(loc).canShare()) {
 				loc = rand.nextInt(board.getNumberOfTiles());
 			}
 			mjc.setLocation(loc);
@@ -149,7 +149,7 @@ public class GameModel {
 	 */
 	
 	public boolean moveMrJackCharacter(int choice) {
-		boolean[] reachable = board.getLegalMovement(currentMrJackCharacter, getCharacterLocations());
+		boolean[] reachable = board.getLegalMovements(currentMrJackCharacter, getCharacterLocations());
 		if(reachable[choice]) {
 			currentMrJackCharacter.setLocation(choice);
 		}
@@ -287,7 +287,7 @@ public class GameModel {
 		//-- Reachable Tiles  ---------------------------------
 		
 													//Active character, reach, ability
-		boolean[] reach = board.getLegalMovement(currentMrJackCharacter, getCharacterLocations());
+		boolean[] reach = board.getLegalMovements(currentMrJackCharacter, getCharacterLocations());
 		
 
 		
@@ -421,7 +421,7 @@ public class GameModel {
 	 */
 	
 	private Clock deriveClock() {
-		Clock newClock = new Clock(board.getTiles('l'), LANTERN_LIMIT);
+		Clock newClock = new Clock(board.getTilesOfType('l'), LANTERN_LIMIT);
 		return newClock;
 	}
 
