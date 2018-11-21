@@ -82,5 +82,10 @@ public class SirWilliamGull extends MrJackCharacter{
 	public boolean canDoAbilityAfter() {
 		return false;
 	}
+	
+	@Override
+	public boolean canMoveAfterAbility() {
+		return false;
+	}
 
 }

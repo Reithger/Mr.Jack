@@ -73,8 +73,10 @@ public class Board {
 			Tile top = queue.poll();
 			
 			for(int index : top.getNeighbors()) {
-				if(dist.get(index) != null) {
-					dist.put(index, dist.get(top.getLocation() + 1));
+				if(index == -1)
+					continue;
+				if(dist.get(index) == null) {
+					dist.put(index, dist.get(top.getLocation()) + 1);
 					queue.add(tiles[index]);
 					reachable[index] = dist.get(index) <= maxDist;
 				}

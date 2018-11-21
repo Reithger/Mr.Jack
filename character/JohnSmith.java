@@ -105,4 +105,8 @@ public class JohnSmith extends MrJackCharacter {
 		return true;
 	}
 
+	@Override
+	public boolean canMoveAfterAbility() {
+		return true;
+	}
 }

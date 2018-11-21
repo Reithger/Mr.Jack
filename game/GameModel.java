@@ -40,7 +40,7 @@ public class GameModel {
 	/** MrJackCharacter representing the chosen character that the active player is using for their turn*/
 	MrJackCharacter currentMrJackCharacter;
 	/** HashSet<<r>Integer> object representing which MrJackCharacters in a turn have already been used by index*/
-	HashSet<Integer> selectedMrJackCharacters;
+	ArrayList<Integer> selectedMrJackCharacters;
 	/** Detective object representing one of the two players in this instance of the game*/
 	Detective detective;
 	/** MrJack object representing one of the two players in this instance of the game*/
@@ -67,7 +67,7 @@ public class GameModel {
 	public GameModel(File structure, MrJackCharacter ... potentialMrJackCharacters) {
 		board = deriveBoard(structure);
 		allMrJackCharacters = potentialMrJackCharacters;
-		selectedMrJackCharacters = new HashSet<Integer>();
+		selectedMrJackCharacters = new ArrayList<Integer>();
 	}
 	
 //---  Game Behaviors   -----------------------------------------------------------------------
@@ -111,7 +111,7 @@ public class GameModel {
 	
 	public void startTurn() {
 		usedMrJackCharacters = characterSetPerTurn(usedMrJackCharacters);
-		selectedMrJackCharacters = new HashSet<Integer>();
+		selectedMrJackCharacters = new ArrayList<Integer>();
 		currentMrJackCharacter = null;
 	}
 
@@ -152,6 +152,7 @@ public class GameModel {
 	
 	public boolean moveMrJackCharacter(int choice) {
 		boolean[] reachable = board.getLegalMovement(currentMrJackCharacter);
+		System.out.println(Arrays.toString(reachable));
 		if(reachable[choice]) {
 			currentMrJackCharacter.setLocation(choice);
 		}
@@ -253,7 +254,6 @@ public class GameModel {
 		int count = 0;
 		
 		for(int i : selectedMrJackCharacters) {
-			System.out.println("Spot: " + i);
 			count++;
 			out += usedMrJackCharacters[i].getShortName() + "\n";
 		}

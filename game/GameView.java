@@ -90,7 +90,7 @@ public class GameView extends InteractFrame{
     String[] chosenCharacters;
     String[] usedCharacters;
     String currCharacter;
-    ArrayList<Integer> logInput;
+    int[] logInput;
     
     int abilityInput;
     
@@ -293,12 +293,32 @@ public class GameView extends InteractFrame{
 				interfaceEvents(action);
 				break;
 			case GAME_STATE_SELECT:
-				controller.chooseCharacter(action);
-				gameState = GAME_STATE_DEFAULT;
+				boolean resultChoose = controller.chooseCharacter(action);
+				gameState = resultChoose ? GAME_STATE_DEFAULT : gameState;
 				break;
 			case GAME_STATE_MOVE:
+				controller.moveCharacter(action);
+				gameState = GAME_STATE_DEFAULT;
 				break;
-			
+			case GAME_STATE_ABILITY:
+				if(logInput == null) {
+					logInput = new int[abilityInput];
+					for(int i = 0; i < logInput.length; i++)
+						logInput[i] = -1;
+				}
+				for(int i = 0; i < logInput.length; i++)
+					if(logInput[i] == -1) {
+						logInput[i] = action;
+						break;
+					}
+				
+				if(logInput[logInput.length-1] != -1) {
+					boolean resultAbility = controller.useCharacterAbility(logInput);
+					logInput = null;
+					gameState = resultAbility ? GAME_STATE_DEFAULT : gameState;
+				}
+				
+				break;
 		}
 	}
 
@@ -306,6 +326,7 @@ public class GameView extends InteractFrame{
 		switch(action) {
 			case BUTTON_MENU_CODE:
 				programState = PROGRAM_STATE_MENU;
+				controller.restartGame();
 				resetClickEvent();
 				break;
 			case BUTTON_SELECT_CODE:
@@ -441,11 +462,11 @@ public class GameView extends InteractFrame{
 
 	private void drawTile(Graphics g, int x, int y, int hyp, String type, int tile) {
 		drawHexagon(x, y, hyp, g, Color.black, LINE_THICKNESS);				//Border
-		addButton(x, y, (int)(1.3 * hyp), (int)(1.3 * hyp), "", null, g, tile);		//Clickable
+		addButton(x, y, (int)(1.3 * hyp), (int)(1.3 * hyp), "", new Color(155, 155, 155), g, tile);		//Clickable
 		addOwnTextScaled(x, y - TEXT_HEIGHT, type, g, 2);		//Type of Tile
 		if(lit[tile])											//Is Tile lit
 			addPicScaled(x - 4 * TEXT_HEIGHT, y - 3 * TEXT_HEIGHT, LIT_TILE_IMAGE_PATH, g, 2);
-		if(reachable[tile])										//Is Tile reachable
+		if(reachable[tile] && controller.canMove())					//Is Tile reachable
 			addPicScaled(x + 4 * TEXT_HEIGHT, y - 3 * TEXT_HEIGHT, REACHABLE_TILE_IMAGE_PATH, g, 2);
 	}
 		

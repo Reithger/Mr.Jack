@@ -222,4 +222,11 @@ public abstract class MrJackCharacter {
 	
 	public abstract boolean canDoAbilityAfter();
 
+	/**
+	 * 
+	 * @return
+	 */
+	
+	public abstract boolean canMoveAfterAbility();
+	
 }

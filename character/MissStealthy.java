@@ -86,4 +86,8 @@ public class MissStealthy extends MrJackCharacter{
 		return false;
 	}
 
+	@Override
+	public boolean canMoveAfterAbility() {
+		return true;
+	}
 }

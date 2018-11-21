@@ -51,31 +51,46 @@ public class GameController {
     	updateView();
     }
     
+    public void restartGame() {
+    	choseCharacter = false;
+    	movedCharacter = false;
+    	usedAbility = false;
+    }
+    
     public void updateView(){
     	theView.update(theGame.outputGameState());
     }
     
-    public void moveCharacter(int newTileLocation) {
-    	if(movedCharacter)
+    public boolean moveCharacter(int newTileLocation) {
+    	if(movedCharacter || newTileLocation < 0) {
     		updateView();
+    		return movedCharacter;
+    	}
     	movedCharacter = theGame.moveMrJackCharacter(newTileLocation); 
     	updateView();
     	restartCharacterUse();
+    	return movedCharacter;
     }
     
-    public void useCharacterAbility(int[] relevantInformation) {
-    	if(usedAbility)
+    public boolean useCharacterAbility(int[] relevantInformation) {
+    	if(usedAbility) {
     		updateView();
+    		return usedAbility;
+    	}
     	usedAbility = theGame.characterAction(relevantInformation);
     	updateView();
     	restartCharacterUse();
+    	return usedAbility;
     }
     
-    public void chooseCharacter(int tilePosition) {
-    	if(choseCharacter)
+    public boolean chooseCharacter(int tilePosition) {
+    	if(choseCharacter) {
     		updateView();
+    		return choseCharacter;
+    	}
     	choseCharacter = theGame.chooseMrJackCharacter(tilePosition);
     	updateView();
+    	return choseCharacter;
     }
     
     public void restartCharacterUse() {
@@ -95,6 +110,10 @@ public class GameController {
     
     private boolean endCharacterUse() {
     	return choseCharacter && movedCharacter && usedAbility;
+    }
+    
+    public boolean canMove() {
+    	return !movedCharacter;
     }
     
 //---  Helper Methods   -----------------------------------------------------------------------
