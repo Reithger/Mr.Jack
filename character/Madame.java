@@ -22,6 +22,7 @@ public class Madame extends MrJackCharacter{
 		/** ArrayList<<r>Exit> object describing the Tile objects associated to this InspectorLestrade object*/
 		private ArrayList<Manhole> relevantTiles;
 
+		
 	//---  Constructors   -------------------------------------------------------------------------
 		
 		/**
