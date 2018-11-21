@@ -78,7 +78,7 @@ public class JohnSmith extends MrJackCharacter {
 	public void deriveFromModel(GameModel model) {
 		//Find all lantern tiles
 		Board gameBoard = model.getBoard();
-		Tile [] exitTileSet = gameBoard.getTiles('l');
+		Tile [] exitTileSet = gameBoard.getTilesOfType('l');
 		for (Tile tile: exitTileSet){
 			relevantTiles.add((Lantern) tile);
 		}

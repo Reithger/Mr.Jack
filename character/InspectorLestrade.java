@@ -71,7 +71,7 @@ public class InspectorLestrade extends MrJackCharacter {
 	public void deriveFromModel(GameModel model) {
 		//Find all exit tiles
 		Board gameBoard = model.getBoard();
-		Tile [] exitTileSet = gameBoard.getTiles('e');
+		Tile [] exitTileSet = gameBoard.getTilesOfType('e');
 		for (Tile tile: exitTileSet){
 			relevantTiles.add((Exit) tile);
 		}
