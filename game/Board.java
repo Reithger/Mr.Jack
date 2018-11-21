@@ -66,20 +66,13 @@ public class Board {
 		LinkedList<Tile> queue = new LinkedList<Tile>();
 		int maxDist = activeCharacter.getDistance();
 		
-		//-----------------activeCharLocationRel
 		int activeCharLocation=activeCharacter.getLocation();
 		//
 		queue.add(mapTiles[activeCharLocation]);
 		dist.put(activeCharLocation, 0);
 		validDestinationTiles[activeCharLocation] = false;
-		//-----------------
 		
 		
-		/* getting active character location
-		 * adding this character location to the queue
-		 * adding tile location, and distance from current location to the hashmap
-		 * marking the current location as an invalid destination
-		 * */
 
 		while(!queue.isEmpty()) {
 			Tile top = queue.poll();
@@ -87,10 +80,14 @@ public class Board {
 			for(int index : top.getNeighbors()) {  //neighbours of the current tile 
 				if(index == -1) 
 					continue;
-				if(dist.get(index) == null) {
+				if(dist.get(index) == null && activeCharacter.canMove(mapTiles[index], dist.get(top.getLocation()) + 1)) {
 					dist.put(index, dist.get(top.getLocation()) + 1);
+
 					queue.add(mapTiles[index]);
 					validDestinationTiles[index] = dist.get(index) <= maxDist;
+					queue.add(mapTiles[index]);
+					validDestinationTiles[index] = dist.get(index) <= maxDist && mapTiles[index].canShare();
+
 					for(int i : characterLocations) {
 						if(index == i)
 							validDestinationTiles[index] = false;
@@ -229,7 +226,7 @@ public class Board {
 	
 	private Tile initializeTile(String newTileInfo) {
 		String[] tileSpecs = newTileInfo.split(" ");
-		
+		System.out.println("we are initializing a tile");
 		int[] neighbors = new int[tileSpecs.length - 2];
 		for(int i = 2; i < tileSpecs.length; i++) {
 			neighbors[i-2] = Integer.parseInt(tileSpecs[i]); //assigning neighbours to tile

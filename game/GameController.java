@@ -79,6 +79,7 @@ public class GameController {
     		return usedAbility;
     	}
     	usedAbility = theGame.characterAction(relevantInformation);
+    	System.out.println("Abil: " + usedAbility);
     	updateView();
     	restartCharacterUse();
     	return usedAbility;
@@ -100,6 +101,15 @@ public class GameController {
 	    	movedCharacter = false;
 	    	usedAbility = false;
 	    	theGame.clearCurrentCharacter();
+	    	if(theView.allCharactersUsed()) {
+	    		boolean gameOver = theGame.endTurn();
+	    		if(gameOver) {
+	    			//end game
+	    		}
+	    		else {
+	    			theGame.startTurn();
+	    		}
+	    	}
 	    }
     }
     
@@ -124,6 +134,10 @@ public class GameController {
     
     public boolean getUsedAbility() {
     	return usedAbility;
+    }
+    
+    public boolean getSelectedCharacter() {
+    	return choseCharacter;
     }
     
     public void cannotMove() {

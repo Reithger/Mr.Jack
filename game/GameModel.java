@@ -24,6 +24,7 @@ public class GameModel {
 	private static final int NUMBER_ACTIVE_CHARACTERS = 4;
 	/** int constant value representing the number of lanterns that will be turned off*/
 	private static final int LANTERN_LIMIT = 4;
+	private static final int LANTERNS_OFF = 1;
 	/** int constant value representing the number of turns in one game instance*/
 	private static final int NUMBER_OF_TURNS = 2;
 	/** String[] constant object representing the types of Players that can be active at any moment*/
@@ -90,7 +91,7 @@ public class GameModel {
 		usedMrJackCharacters = new MrJackCharacter[0];
 		Random rand = new Random();
 		HashSet<Integer> used = new HashSet<Integer>();
-		for(MrJackCharacter mjc : allMrJackCharacters) {
+		for(MrJackCharacter mjc : activeMrJackCharacters) {
 			mjc.setSuspect(true);
 			mjc.setLit(false);
 			mjc.deriveFromModel(this);
@@ -101,6 +102,7 @@ public class GameModel {
 			mjc.setLocation(loc);
 			used.add(loc);
 		}
+		mrJack.assignMrJack(activeMrJackCharacters[rand.nextInt(activeMrJackCharacters.length)]);
 	}
 
 	/**
@@ -422,6 +424,7 @@ public class GameModel {
 	
 	private Clock deriveClock() {
 		Clock newClock = new Clock(board.getTilesOfType('l'), LANTERN_LIMIT);
+		Clock newClock = new Clock(board.getTilesOfType('l'), LANTERN_LIMIT, LANTERNS_OFF);
 		return newClock;
 	}
 
