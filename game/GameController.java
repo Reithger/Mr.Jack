@@ -59,7 +59,6 @@ public class GameController {
     
     public void updateView(){
     	theView.update(theGame.outputGameState());
-    	System.out.println(choseCharacter + " " + movedCharacter + " " + usedAbility);
     }
     
     public boolean moveCharacter(int newTileLocation) {
@@ -79,7 +78,6 @@ public class GameController {
     		return usedAbility;
     	}
     	usedAbility = theGame.characterAction(relevantInformation);
-    	System.out.println("Abil: " + usedAbility);
     	updateView();
     	restartCharacterUse();
     	return usedAbility;

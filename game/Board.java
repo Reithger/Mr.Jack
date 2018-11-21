@@ -72,6 +72,20 @@ public class Board {
 		while(!queue.isEmpty()) {
 			Tile top = queue.poll();
 			
+			if(top.getIdentity() == 'm') {
+				for(Tile t : this.getTiles('m')) {
+					if(dist.get(t.getLocation()) != null)
+						continue;
+					dist.put(t.getLocation(), dist.get(top.getLocation()) + 1);
+					queue.add(t);
+					reachable[t.getLocation()] = dist.get(t.getLocation()) <= maxDist && tiles[t.getLocation()].canShare();
+					for(int i : characterLocations) {
+						if(t.getLocation() == i)
+							reachable[t.getLocation()] = false;
+					}
+				}
+			}
+			
 			for(int index : top.getNeighbors()) {
 				if(index == -1)
 					continue;

@@ -316,6 +316,10 @@ public class GameView extends InteractFrame{
 				gameState = resultChoose ? GAME_STATE_DEFAULT : gameState;
 				break;
 			case GAME_STATE_MOVE:
+				if(!controller.getSelectedCharacter()) {
+					gameState = GAME_STATE_DEFAULT;
+					break;
+				}
 				if(!abilityPermissions[4] && controller.getUsedAbility()) {
 					controller.cannotMove();
 				}
@@ -323,6 +327,10 @@ public class GameView extends InteractFrame{
 				gameState = GAME_STATE_DEFAULT;
 				break;
 			case GAME_STATE_ABILITY:
+				if(!controller.getSelectedCharacter()) {
+					gameState = GAME_STATE_DEFAULT;
+					break;
+				}
 				if(!abilityPermissions[3] && controller.getHasMovedCharacter()) {
 					controller.cannotDoAbility();
 					gameState = GAME_STATE_DEFAULT;
@@ -447,7 +455,6 @@ public class GameView extends InteractFrame{
 			
 			drawTile(g, (int)(BOARD_CENTER_X + dT.getX() * size), (int)(BOARD_CENTER_Y + dT.getY() * size), size, dT.getType(), dT.getIndex(), dT.getState());
 			for(int i = 0; i < chosenCharacters.length; i++) {
-				System.out.println("Chose: " + chosenCharacters[i]);
 				String[] in = chosenCharacters[i].split(" ");
 				int inde = Integer.parseInt(in[1]);
 				addOwnTextScaled((int)(BOARD_CENTER_X + tileDrawing[inde].getX() * size), (int)(BOARD_CENTER_Y + tileDrawing[inde].getY() * size) + TEXT_HEIGHT * 2, in[0], g, 2);
@@ -526,7 +533,7 @@ public class GameView extends InteractFrame{
 		addOwnTextScaled(x - TEXT_HEIGHT * 4, y - TEXT_HEIGHT * 6, tile + "", g, 1);		//Tile index value, debugging mostly
 		if(lit[tile])											//Is Tile lit
 			addPicScaled(x - 4 * TEXT_HEIGHT, y - 3 * TEXT_HEIGHT, LIT_TILE_IMAGE_PATH, g, 2);
-		if(reachable[tile] && controller.canMove())					//Is Tile reachable
+		if(reachable[tile] && controller.canMove() && gameState == GAME_STATE_MOVE)					//Is Tile reachable
 			addPicScaled(x + 4 * TEXT_HEIGHT, y - 3 * TEXT_HEIGHT, REACHABLE_TILE_IMAGE_PATH, g, 2);
 		switch(type) {
 			case "l": addOwnTextScaled(x, y + TEXT_HEIGHT * 5, state ? "On" : "Off", g , 2); break;
