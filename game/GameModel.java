@@ -511,7 +511,7 @@ public class GameModel {
 		Random rand = new Random();
 		
 		while(newMrJackCharacters[NUMBER_ACTIVE_CHARACTERS - 1] == null) {
-			int ind = rand.nextInt(allMrJackCharacters.length);
+			int ind = rand.nextInt(activeMrJackCharacters.length);
 			MrJackCharacter possible = allMrJackCharacters[ind];
 			boolean result = true;
 			if(potential != null) {
