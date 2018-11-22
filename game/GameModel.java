@@ -84,24 +84,13 @@ public class GameModel {
 		detective = new Detective();
 		player = 0;
 		clock = deriveClock();
-		activeMrJackCharacters = deriveMrJackCharacters(allMrJackCharacters);
+		activeMrJackCharacters = deriveMrJackCharacters(allMrJackCharacters); 
 		gameOver = false;
 		selectedMrJackCharacters.clear();
 		currentMrJackCharacter = null;
 		usedMrJackCharacters = new MrJackCharacter[0];
 		Random rand = new Random();
-		HashSet<Integer> used = new HashSet<Integer>();
-		for(MrJackCharacter mjc : activeMrJackCharacters) {
-			mjc.setSuspect(true);
-			mjc.setLit(false);
-			mjc.deriveFromModel(this);
-			int loc = rand.nextInt(board.getNumberOfTiles());
-			while(used.contains(loc) || !board.getTileAtLocation(loc).canShare()) {
-				loc = rand.nextInt(board.getNumberOfTiles());
-			}
-			mjc.setLocation(loc);
-			used.add(loc);
-		}
+		initializeCharacters(activeMrJackCharacters, rand);//added helper methods
 		mrJack.assignMrJack(activeMrJackCharacters[rand.nextInt(activeMrJackCharacters.length)]);
 	}
 
@@ -395,6 +384,36 @@ public class GameModel {
 	
 //---  Helper Methods   -----------------------------------------------------------------------
 
+	/**
+	 * This method sets the initial statuses and positions for the active MrJackCharacters
+	 * 
+	 * @param chars 
+	 * @param random
+	 */
+	
+	private void initializeCharacters(MrJackCharacter[] chars, Random random) {
+		HashSet<Integer> used = new HashSet<Integer>();
+		for(MrJackCharacter mjc : activeMrJackCharacters) {
+			initializeCharStatus(mjc);
+			mjc.deriveFromModel(this);
+			initializeCharLocation(mjc,random,used);	
+		}
+	}//initializeCharacters
+	
+	private void initializeCharStatus(MrJackCharacter m) {
+		m.setSuspect(true);
+		m.setLit(false);
+	}//initializeCharStatus
+	
+	private void initializeCharLocation(MrJackCharacter m, Random r, HashSet<Integer> h) {
+		int loc = r.nextInt(board.getNumberOfTiles());
+		while(h.contains(loc) || !board.getTileAtLocation(loc).canShare()) {
+			loc = r.nextInt(board.getNumberOfTiles());
+		}
+		m.setLocation(loc);
+		h.add(loc);
+	}
+	
 	/**
 	 * This method converts a provided file object into the Board that the game will
 	 * be using for its operations. 
