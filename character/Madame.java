@@ -16,13 +16,16 @@ public class Madame extends MrJackCharacter{
 		/** Constant int value representing the total number of moves this Madame object can do in one turn*/
 		private static final int NUM_MOVES = 6;
 		/** Constant String object representing the shorthand name for this MrJackCharacter object*/
-		private static final String SHORT_NAME = "M";
+		private static final String SHORT_NAME = "MDM";
 		
 	//---  Instance Variables   -------------------------------------------------------------------
 		
-		/** ArrayList<<r>Exit> object describing the Tile objects associated to this InspectorLestrade object*/
-		private ArrayList<Manhole> relevantTiles;
-
+		@Override
+		public boolean canMove(Tile start, Tile end, int distance) {
+			boolean prelim = super.canMove(start, end, distance);
+			return prelim && ability(start, end);
+			
+		}
 		
 	//---  Constructors   -------------------------------------------------------------------------
 		
@@ -35,40 +38,34 @@ public class Madame extends MrJackCharacter{
 		public Madame(){
 			name = NAME;
 			numMoves = NUM_MOVES;
-			relevantTiles = new ArrayList<Manhole>();
 			shortName = SHORT_NAME;
 		}
 
 	//---  Operations   ---------------------------------------------------------------------------
 
 		@Override
-		public boolean ability(Tile[] choice) {
-			//can't use manholes for traveling
-			
+		public boolean ability(Tile ... choice) {
+			if(choice[0].getIdentity() == 'm' && choice[1].getIdentity() == 'm')
+				return false;
 			return true;
 		}
 
 		@Override
 		public void deriveFromModel(GameModel model) {
-			//Find all manhole tiles
-			Board gameBoard = model.getBoard();
-			Tile [] manholeTileSet = gameBoard.getTilesOfType('m');
-			for (Tile tile: manholeTileSet){
-				relevantTiles.add((Manhole) tile);
-			}
+			return;
 		}
 		
 	//---  Ability Queries   ----------------------------------------------------------------------
 		
 		@Override
 		public int requiredValuesForAbility() {
-			return 2;
+			return 0;
 		}
 
 		@Override
 		public boolean hasToDoAbility() {
 			//she must do ability at some point
-			return true;
+			return false;
 		}
 
 		@Override
@@ -92,6 +89,6 @@ public class Madame extends MrJackCharacter{
 
 		@Override
 		public boolean canMoveAfterAbility() {
-			return false;
+			return true;
 		}
 }

@@ -39,8 +39,8 @@ public abstract class MrJackCharacter {
 	 * @return - Returns a boolean value representing whether or not we can enter the provided Tile space.
 	 */
 
-	public boolean canMove(Tile tile, int distance) {
-		return distance <= numMoves && tile.canShare();
+	public boolean canMove(Tile start, Tile end, int distance) {
+		return distance <= numMoves && end.canShare() && start.getBarricade() != end.getLocation();
 	}
 
 	/**

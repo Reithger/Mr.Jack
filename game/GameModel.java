@@ -308,7 +308,15 @@ public class GameModel {
 		for(int i = 0; i < activeMrJackCharacters.length; i++)
 			out += (activeMrJackCharacters[i].getSuspect() == true ? "1" : "0") + (i + 1 == activeMrJackCharacters.length ? "\n" : " ");
 		
+		//-- Barricade  ---------------------------------------
+		
+		out += "2\n";
+		for(int barricadeIndex : board.getBarricadeTiles()) {
+			out += barricadeIndex + "\n";
+		}
+
 		return out;
+		
 	}
 
 	/**
@@ -435,7 +443,7 @@ public class GameModel {
 	 */
 	
 	private MrJackCharacter[] deriveMrJackCharacters(MrJackCharacter[] potential) {
-		int maxSize = NUMBER_ACTIVE_CHARACTERS * 2 < potential.length ? NUMBER_ACTIVE_CHARACTERS * 2 : potential.length;
+		int maxSize = NUMBER_ACTIVE_CHARACTERS;
 		MrJackCharacter[] toUse = new MrJackCharacter[maxSize];
 		Random rand = new Random();
 		int index = 0;

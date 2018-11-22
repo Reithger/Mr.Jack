@@ -97,6 +97,8 @@ public class GameView extends InteractFrame{
     
     int abilityInput;
     
+    int[] barricadeTiles;
+    
 //---  Constructors   -------------------------------------------------------------------------
 	
 	public GameView(GameController reference){
@@ -258,6 +260,12 @@ public class GameView extends InteractFrame{
 		
 		for(int i = 0; i < inBool.length; i++)
 			suspect[i] = inBool[i].equals("1");
+		
+		//-- Barricade Tiles  ---------------------------------
+		
+		barricadeTiles = new int[Integer.parseInt(sc.nextLine())];
+		for(int i = 0; i < barricadeTiles.length; i++)
+			barricadeTiles[i] = Integer.parseInt(sc.nextLine());
 		
 		sc.close();
 	}
@@ -511,13 +519,13 @@ public class GameView extends InteractFrame{
 		int spacer = SCREEN_WIDTH/4 - SCREEN_WIDTH/10 + TEXT_HEIGHT;
 		
 		//Select Character
-		addImageButton(startX, SCREEN_HEIGHT * 9 / 10, LABEL_USER_SELECT, MENU_FRAME_PATH, g, BUTTON_SELECT_CODE, 2, 3);
+		addImageButton(startX, SCREEN_HEIGHT * 9 / 10, gameState == GAME_STATE_SELECT ? "" : LABEL_USER_SELECT, MENU_FRAME_PATH, g, BUTTON_SELECT_CODE, 2, 3);
 		
 		//Move Character
-		addImageButton(startX + spacer, SCREEN_HEIGHT * 9 / 10, LABEL_USER_MOVE, MENU_FRAME_PATH, g, BUTTON_MOVE_CODE, 2, 3);
+		addImageButton(startX + spacer, SCREEN_HEIGHT * 9 / 10, gameState == GAME_STATE_MOVE ? "" : LABEL_USER_MOVE, MENU_FRAME_PATH, g, BUTTON_MOVE_CODE, 2, 3);
 		
 		//Use Character Ability
-		addImageButton(startX + spacer * 2, SCREEN_HEIGHT * 9 / 10, LABEL_USER_ABILITY, MENU_FRAME_PATH, g, BUTTON_ABILITY_CODE, 2, 3);
+		addImageButton(startX + spacer * 2, SCREEN_HEIGHT * 9 / 10, gameState == GAME_STATE_ABILITY ? "" : LABEL_USER_ABILITY, MENU_FRAME_PATH, g, BUTTON_ABILITY_CODE, 2, 3);
 		
 		//Cancel Last Action (Sets all values back to default)
 		addImageButton(startX + spacer * 3, SCREEN_HEIGHT * 9 / 10, LABEL_USER_CANCEL, MENU_FRAME_PATH, g, BUTTON_CANCEL_CODE, 2, 3);
@@ -540,6 +548,9 @@ public class GameView extends InteractFrame{
 			case "m": addOwnTextScaled(x, y + TEXT_HEIGHT * 5, state ? "Closed" : "Open", g , 2); break;
 			case "e": addOwnTextScaled(x, y + TEXT_HEIGHT * 5, state ? "Blocked" : "Open", g , 2); break;
 			default: 
+		}
+		if(tile == barricadeTiles[0]) {
+			
 		}
 	}
 		

@@ -23,6 +23,8 @@ public class Manhole extends Tile{
 	/** boolean instance variable representing whether or not this Manhole object is blocked off or not*/
 	boolean covered;
 	
+	Tile[] connectedManholes;
+	
 //---  Constructors   -------------------------------------------------------------------------
 	
 	/**
@@ -39,6 +41,23 @@ public class Manhole extends Tile{
 		location = loc;
 	}
 
+//---  Operations   ---------------------------------------------------------------------------
+
+	/**
+	 * 
+	 */
+	
+	@Override
+	public int[] getNeighbors() {
+		int[] out = super.getNeighbors();
+		int[] reallyOut = new int[out.length + connectedManholes.length];
+		for(int i = 0; i < out.length; i++)
+			reallyOut[i] = out[i];
+		for(int i = out.length; i < out.length + connectedManholes.length; i++)
+			reallyOut[i] = connectedManholes[i - out.length].getLocation();
+		return reallyOut;
+	}
+	
 //---  Getter Methods   -----------------------------------------------------------------------
 	
 	/**
@@ -63,4 +82,7 @@ public class Manhole extends Tile{
 		covered = val;
 	}
 	
+	public void assignManholeNeighbors(Tile[] manholes) {
+		connectedManholes = manholes;
+	}
 }

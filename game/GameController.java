@@ -19,7 +19,9 @@ public class GameController {
 	private static final MrJackCharacter[] CHARACTERS = {new InspectorLestrade(),
 														 new JohnSmith(),
 														 new MissStealthy(),
-														 new SirWilliamGull()};
+														 new SirWilliamGull(),
+														 new Madame(),
+														 new JosephLane()};
     private static final int SCREEN_WIDTH = 1222;
     private static final int SCREEN_HEIGHT = 854;
 	
@@ -89,6 +91,7 @@ public class GameController {
     		return choseCharacter;
     	}
     	choseCharacter = theGame.chooseMrJackCharacter(tilePosition);
+    	System.out.println("Choose: " + tilePosition + " " + choseCharacter);
     	updateView();
     	return choseCharacter;
     }

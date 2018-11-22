@@ -48,7 +48,7 @@ public class JohnSmith extends MrJackCharacter {
 //---  Operations   ---------------------------------------------------------------------------
 	
 	@Override
-	public boolean ability(Tile[] choice) {
+	public boolean ability(Tile ... choice) {
 		Lantern on = null;
 		Lantern off = null;
 		for(Lantern t : relevantTiles) {

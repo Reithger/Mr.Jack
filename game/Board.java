@@ -44,6 +44,13 @@ public class Board {
 		mapTiles = new Tile[Integer.parseInt(boardDesign[0])];
 		for(int i = 1; i < boardDesign.length; i++) {
 			mapTiles[i - 1] = initializeTile(boardDesign[i]);
+			mapTiles[i-1].setBarricade(-1);
+		}
+
+		//Relate Manholes to each other
+		Tile[] manholes = getTilesOfType('m');
+		for(Tile t : manholes) {
+			((Manhole)t).assignManholeNeighbors(manholes);
 		}
 	}
 	
@@ -55,6 +62,7 @@ public class Board {
 	 * @param activeCharacter
 	 * @return
 	 */
+	
 	//-------related to character------
 	public boolean[] getLegalMovements(MrJackCharacter activeCharacter, int[] characterLocations) {
 		boolean[] validDestinationTiles = new boolean[mapTiles.length];
@@ -77,28 +85,12 @@ public class Board {
 		while(!queue.isEmpty()) {
 			Tile top = queue.poll();
 			
-			if(top.getIdentity() == 'm') {
-				for(Tile t : this.getTilesOfType('m')) {
-					if(dist.get(t.getLocation()) != null)
-						continue;
-					dist.put(t.getLocation(), dist.get(top.getLocation()) + 1);
-					queue.add(t);
-					validDestinationTiles[t.getLocation()] = dist.get(t.getLocation()) <= maxDist && mapTiles[t.getLocation()].canShare();
-					for(int i : characterLocations) {
-						if(t.getLocation() == i)
-							validDestinationTiles[t.getLocation()] = false;
-					}
-				}
-			}
-		
 			for(int index : top.getNeighbors()) {  //neighbours of the current tile 
 				if(index == -1) 
 					continue;
-				if(dist.get(index) == null && activeCharacter.canMove(mapTiles[index], dist.get(top.getLocation()) + 1)) {
-					dist.put(index, dist.get(top.getLocation()) + 1);
+				if(dist.get(index) == null && activeCharacter.canMove(top, mapTiles[index], dist.get(top.getLocation()) + 1)) {
 
-					queue.add(mapTiles[index]);
-					validDestinationTiles[index] = dist.get(index) <= maxDist;
+					dist.put(index, dist.get(top.getLocation()) + 1);
 					queue.add(mapTiles[index]);
 					validDestinationTiles[index] = dist.get(index) <= maxDist && mapTiles[index].canShare();
 
@@ -228,6 +220,23 @@ public class Board {
 		return mapTiles.length;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
+	
+	public int[] getBarricadeTiles() {
+		int[] out = new int[2];
+		for(Tile t : mapTiles) {
+			if(t.getBarricade() != -1) {
+				out[0] = t.getLocation();
+				out[1] = t.getBarricade();
+				break;
+			}
+		}
+		return out;
+	}
+	
 //---  Helper Methods   ---------------------------------------------------------------------------
 	
 	/**
@@ -240,7 +249,6 @@ public class Board {
 	
 	private Tile initializeTile(String newTileInfo) {
 		String[] tileSpecs = newTileInfo.split(" ");
-		System.out.println("we are initializing a tile");
 		int[] neighbors = new int[tileSpecs.length - 2];
 		for(int i = 2; i < tileSpecs.length; i++) {
 			neighbors[i-2] = Integer.parseInt(tileSpecs[i]); //assigning neighbours to tile

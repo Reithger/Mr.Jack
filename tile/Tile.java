@@ -23,6 +23,8 @@ public abstract class Tile {
 	boolean shareable;
 	/** int value describing the index of this Tile object in the Board's array of Tile objects; unique identifier*/
 	int location;
+	/** int value describing where a barricade is positioned by the index of the barricade around the tile; -1 if no barricade*/
+	int barricade;
 	
 //---  Setter Methods   -----------------------------------------------------------------------
 
@@ -35,6 +37,15 @@ public abstract class Tile {
 	
 	public void assignNeighbors(int[] in) {
 		neighbors = in;
+	}
+
+	/**
+	 * 
+	 * @param index
+	 */
+	
+	public void setBarricade(int index) {
+		barricade = index;
 	}
 	
 //---  Getter Methods   -----------------------------------------------------------------------
@@ -81,4 +92,9 @@ public abstract class Tile {
 	public int getLocation() {
 		return location;
 	}
+
+	public int getBarricade() {
+		return barricade;
+	}
+	
 }
