@@ -310,7 +310,7 @@ public class GameModel {
 		
 		//-- Barricade  ---------------------------------------
 		
-		out += "2\n";
+		out += board.getBarricadeTiles().length + "\n";
 		for(int barricadeIndex : board.getBarricadeTiles()) {
 			out += barricadeIndex + "\n";
 		}

@@ -227,6 +227,8 @@ public class Board {
 	
 	public int[] getBarricadeTiles() {
 		int[] out = new int[2];
+		out[0] = -1;
+		out[1] = -1;
 		for(Tile t : mapTiles) {
 			if(t.getBarricade() != -1) {
 				out[0] = t.getLocation();

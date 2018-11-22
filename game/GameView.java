@@ -549,8 +549,8 @@ public class GameView extends InteractFrame{
 			case "e": addOwnTextScaled(x, y + TEXT_HEIGHT * 5, state ? "Blocked" : "Open", g , 2); break;
 			default: 
 		}
-		if(tile == barricadeTiles[0]) {
-			
+		if(barricadeTiles != null && tile == barricadeTiles[0]) {
+			addOwnTextScaled(x + TEXT_HEIGHT * 4, y - TEXT_HEIGHT * 6, barricadeTiles[1] + "", g, 2);
 		}
 	}
 		
