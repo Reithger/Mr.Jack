@@ -19,11 +19,11 @@ public interface GameCharacter {
 	public void setLit(boolean in);
 	public void setSuspect(boolean in);
 	public void setLocation(int index);
-	public abstract int requiredValuesForAbility();
-	public abstract boolean hasToDoAbility();
-	public abstract boolean canDoAbilityBefore();
-	public abstract boolean canDoAbilityDuring();
-	public abstract boolean canDoAbilityAfter();
-	public abstract boolean canMoveAfterAbility();
+	public int requiredValuesForAbility();
+	public boolean hasToDoAbility();
+	public boolean canDoAbilityBefore();
+	public boolean canDoAbilityDuring();
+	public boolean canDoAbilityAfter();
+	public boolean canMoveAfterAbility();
 
 }

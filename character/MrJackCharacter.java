@@ -11,7 +11,7 @@ import game.GameModel;
  *
  */
 
-public abstract class MrJackCharacter {
+public abstract class MrJackCharacter implements GameCharacter{
 
 //---  Instance Variables   -------------------------------------------------------------------
 	
