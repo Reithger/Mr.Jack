@@ -30,6 +30,7 @@ public class SirWilliamGull extends MrJackCharacter{
 		numMoves = NUM_MOVES;
 		characters = new MrJackCharacter[4];
 		shortName = SHORT_NAME;
+		this.setLocation(-1);
 	}
 
 //---  Operations   ---------------------------------------------------------------------------

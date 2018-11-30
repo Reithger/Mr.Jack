@@ -38,6 +38,7 @@ public class GameView extends InteractFrame{
     private static final int PROGRAM_STATE_MENU = 0;
     private static final int PROGRAM_STATE_GAME = 1;
     
+    private static final int GAME_STATE_PLACE_CHARACTERS = -1;
     private static final int GAME_STATE_DEFAULT = 0;
     private static final int GAME_STATE_SELECT = 1;
     private static final int GAME_STATE_MOVE = 2;
@@ -286,6 +287,7 @@ public class GameView extends InteractFrame{
 
 	@Override
 	public void clickEvent() {
+		System.out.println("Game State: " + gameState);
 		int action = getClickComponent().getSelected();
 		System.out.println(action);
 		switch(programState) {
@@ -304,6 +306,10 @@ public class GameView extends InteractFrame{
 	private void menuEvent(int action) {
 		switch(action) {
 			case 0:	programState = PROGRAM_STATE_GAME;
+					gameState = GAME_STATE_PLACE_CHARACTERS;
+					logInput = new int[2];
+					logInput[0] = -1;
+					logInput[1] = -1;
 					controller.startMrJack();
 					resetClickEvent();
 					break;
@@ -316,6 +322,9 @@ public class GameView extends InteractFrame{
 			gameState = GAME_STATE_DEFAULT;
 		}
 		switch(gameState) {
+			case GAME_STATE_PLACE_CHARACTERS:
+				interfaceEventsPlaceCharacter(action);
+				break;
 			case GAME_STATE_DEFAULT:
 				interfaceEvents(action);
 				break;
@@ -399,6 +408,27 @@ public class GameView extends InteractFrame{
 	}
 	}
 	
+	private void interfaceEventsPlaceCharacter(int action) {
+		for(int i = 0; i < logInput.length; i++) {
+			if(logInput[i] == -1) {
+				logInput[i] = action + (i == 0 ? 4 : 0);
+				if(i + 1 < logInput.length)
+					return;
+			}
+		}
+		boolean result = controller.placeCharacter(logInput[0], logInput[1]);
+		System.out.println(result);
+		if(result) {
+			gameState = GAME_STATE_DEFAULT;
+			controller.startTurn();
+			resetClickEvent();
+		}
+		else {
+			logInput[0] = -1;
+			logInput[1] = -1;
+		}
+	}
+	
 	@Override
 	public void keyEvent() {
 		
@@ -450,7 +480,7 @@ public class GameView extends InteractFrame{
 	
 	private void drawBoard(Graphics g) {
 		addPicScaledCorner(0, 0, BOARD_FRAME_PATH, g, 4);
-
+		
 		int size = (int)(SCREEN_HEIGHT * 4.0 / 5.0 / height);
 		int size2 = (int)(SCREEN_WIDTH * 5.0 / 6.0 / width);
 		size = size < size2 ? size : size2;
@@ -465,6 +495,8 @@ public class GameView extends InteractFrame{
 			for(int i = 0; i < chosenCharacters.length; i++) {
 				String[] in = chosenCharacters[i].split(" ");
 				int inde = Integer.parseInt(in[1]);
+				if(inde == -1)
+					continue;
 				addOwnTextScaled((int)(BOARD_CENTER_X + tileDrawing[inde].getX() * size), (int)(BOARD_CENTER_Y + tileDrawing[inde].getY() * size) + TEXT_HEIGHT * 2, in[0], g, 2);
 				if(suspect[i]) {
 					addPicScaled((int)(BOARD_CENTER_X + tileDrawing[inde].getX() * size), (int)(BOARD_CENTER_Y + tileDrawing[inde].getY() * size) - TEXT_HEIGHT * 4, SUSPECT_IMAGE_PATH, g, 1);
@@ -486,7 +518,12 @@ public class GameView extends InteractFrame{
 	
 	private void drawBorder(Graphics g) {
 		drawClock(g);
-		drawInteraction(g);
+		if(gameState == GAME_STATE_PLACE_CHARACTERS) {
+			drawInteractionCharacterPlacement(g);
+		}
+		else {
+			drawInteraction(g);
+		}
 	}
 	
 	private void drawClock(Graphics g) {
@@ -534,6 +571,21 @@ public class GameView extends InteractFrame{
 		addImageButton(startX + spacer * 5, SCREEN_HEIGHT * 9 / 10, LABEL_MENU, MENU_FRAME_PATH, g, BUTTON_MENU_CODE, 2, 3);
 	}
 
+	private void drawInteractionCharacterPlacement(Graphics g) {
+		addPicScaledCorner(0, SCREEN_HEIGHT*4/5, BOTTOM_FRAME_PATH, g, 4);
+		
+		int startX = SCREEN_WIDTH/10;
+		int spacer = SCREEN_WIDTH/4 - SCREEN_WIDTH/10 + TEXT_HEIGHT;
+		
+		for(int i = 0; i < chosenCharacters.length; i++) {
+			if(chosenCharacters[i].split(" ")[1].equals("-1"))
+				addImageButton(startX + spacer * i, SCREEN_HEIGHT * 9 / 10, chosenCharacters[i].split(" ")[0], MENU_FRAME_PATH, g, -4 + i, 2, 3);
+		}
+		
+		//Menu (return to main menu/end game)
+		addImageButton(startX + spacer * 5, SCREEN_HEIGHT * 9 / 10, LABEL_MENU, MENU_FRAME_PATH, g, BUTTON_MENU_CODE, 2, 3);
+	}
+	
 	private void drawTile(Graphics g, int x, int y, int hyp, String type, int tile, boolean state) {
 		drawHexagon(x, y, hyp, g, Color.black, LINE_THICKNESS);				//Border
 		addButton(x, y, (int)(1.3 * hyp), (int)(1.3 * hyp), "", null, g, tile);		//Clickable

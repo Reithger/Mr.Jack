@@ -64,8 +64,10 @@ public class MrJack extends Player{
 	 * @return - Returns a boolean value describing whether the MrJack Player has won or not.
 	 */
 	
-	public boolean hasWonEscape(boolean onExit) {
+	public boolean hasWonEscape(boolean onExit, int turn) {
 		//Check if the character is lit or not if is on exit
+		if(turn == 0)
+			return false;
 		boolean litStatus = mrJack.getLit();
 		if (!litStatus || onExit){
 			return true;

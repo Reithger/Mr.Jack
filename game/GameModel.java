@@ -24,6 +24,7 @@ public class GameModel {
 	private static final int NUMBER_ACTIVE_CHARACTERS = 4;
 	/** int constant value representing the number of lanterns that will be turned off*/
 	private static final int LANTERN_LIMIT = 4;
+	/** */
 	private static final int LANTERNS_OFF = 1;
 	/** int constant value representing the number of turns in one game instance*/
 	private static final int NUMBER_OF_TURNS = 2;
@@ -55,6 +56,8 @@ public class GameModel {
 	/** int value representing which player is the currently active player; who is controlling the currentMrJackCharacter?*/
 	int player;
 	
+	File boardStructure;
+	
 //---  Constructors   -------------------------------------------------------------------------
 	
 	/**
@@ -66,7 +69,7 @@ public class GameModel {
 	 */
 	
 	public GameModel(File structure, MrJackCharacter ... potentialMrJackCharacters) {
-		board = deriveBoard(structure);
+		boardStructure = structure;
 		allMrJackCharacters = potentialMrJackCharacters;
 		selectedMrJackCharacters = new ArrayList<Integer>();
 	}
@@ -82,6 +85,7 @@ public class GameModel {
 	public void startGame() {
 		mrJack = new MrJack();
 		detective = new Detective();
+		board = deriveBoard(boardStructure);
 		player = 0;
 		clock = deriveClock();
 		activeMrJackCharacters = deriveMrJackCharacters(allMrJackCharacters); 
@@ -94,6 +98,24 @@ public class GameModel {
 		mrJack.assignMrJack(activeMrJackCharacters[rand.nextInt(activeMrJackCharacters.length)]);
 	}
 
+	public boolean placeMrJackCharacter(int character, int tile) {
+		if(character < 0 || character >= activeMrJackCharacters.length || tile == -1) {
+			return false;
+		}
+		int count = 0;
+		for(int i = 0; i < activeMrJackCharacters.length; i++) {
+			if(activeMrJackCharacters[i].getLocation() != -1) {
+				count++;
+				continue;
+			}
+			if(i == character && board.getTileAtLocation(tile).canShare()) {
+				activeMrJackCharacters[i].setLocation(tile);
+				count++;
+			}
+		}
+		return (count == NUMBER_ACTIVE_CHARACTERS);
+	}
+		
 	/**
 	 * This method starts a turn in the current Mr. Jack game, getting the MrJackCharacters
 	 * to be used during this turn and resetting the tracker for which have been used so far.
@@ -116,7 +138,7 @@ public class GameModel {
 	
 	public boolean chooseMrJackCharacter(int choice) {
 		int loc = -1;
-		for(MrJackCharacter mjc : usedMrJackCharacters) {
+		for(MrJackCharacter mjc : activeMrJackCharacters) {
 			loc++;
 			if(selectedMrJackCharacters.contains(loc))
 				continue;
@@ -172,7 +194,7 @@ public class GameModel {
 	
 	public boolean accuseCharacter(int choice) {
 		MrJackCharacter accused = null;
-		for(MrJackCharacter mjc : usedMrJackCharacters) {
+		for(MrJackCharacter mjc : activeMrJackCharacters) {
 			if(mjc.getLocation() == choice)
 				accused = mjc;
 		}
@@ -180,10 +202,6 @@ public class GameModel {
 		return detective.hasWonAccusation(accused);
 	}
 
-	public void clearCurrentCharacter() {
-		currentMrJackCharacter = null;
-	}
-	
 	/**
 	 * This method handles the ending of a turn, setting up for the next batch of MrJackCharacters
 	 * to be selected, iterating the turn counter, deriving which positions are 'lit' for deciding
@@ -200,12 +218,22 @@ public class GameModel {
 		currentMrJackCharacter = null;
 		removeSuspects();
 		
-		if(mrJack.hasWonTimer(clock.getTurn() == NUMBER_OF_TURNS) || mrJack.hasWonEscape(board.getTileIdentity(mrJack.whoIsMrJack().getLocation()) == 'e')) {
+		if(mrJack.hasWonTimer(clock.getTurn() == NUMBER_OF_TURNS) || mrJack.hasWonEscape(board.getTileIdentity(mrJack.whoIsMrJack().getLocation()) == 'e', clock.getTurn())) {
 			gameOver = true;
 			return true;
 		}
 		else
 			return false;
+	}
+	
+//---  Setter Methods   -----------------------------------------------------------------------
+
+	/**
+	 * 
+	 */
+	
+	public void clearCurrentCharacter() {
+		currentMrJackCharacter = null;
 	}
 	
 //---  Getter Methods   -----------------------------------------------------------------------
@@ -241,16 +269,16 @@ public class GameModel {
 		
 		//-- Characters used so far  --------------------------
 		
-		out += usedMrJackCharacters.length + "\n";
+		out += activeMrJackCharacters.length + "\n";
 		
 		int count = 0;
 		
 		for(int i : selectedMrJackCharacters) {
-			out += usedMrJackCharacters[i].getShortName() + "\n";
+			out += activeMrJackCharacters[i].getShortName() + "\n";
 			count++;
 		}
 		
-		while(count < usedMrJackCharacters.length) {
+		while(count < activeMrJackCharacters.length) {
 			count++;
 			out += "-\n";
 		}
@@ -305,7 +333,6 @@ public class GameModel {
 		}
 
 		return out;
-		
 	}
 
 	/**
@@ -396,23 +423,19 @@ public class GameModel {
 		for(MrJackCharacter mjc : activeMrJackCharacters) {
 			initializeCharStatus(mjc);
 			mjc.deriveFromModel(this);
-			initializeCharLocation(mjc,random,used);	
+			//initializeCharLocation(mjc,random,used);	
 		}
 	}//initializeCharacters
+	
+	/**
+	 * 
+	 * @param m
+	 */
 	
 	private void initializeCharStatus(MrJackCharacter m) {
 		m.setSuspect(true);
 		m.setLit(false);
 	}//initializeCharStatus
-	
-	private void initializeCharLocation(MrJackCharacter m, Random r, HashSet<Integer> h) {
-		int loc = r.nextInt(board.getNumberOfTiles());
-		while(h.contains(loc) || !board.getTileAtLocation(loc).canShare()) {
-			loc = r.nextInt(board.getNumberOfTiles());
-		}
-		m.setLocation(loc);
-		h.add(loc);
-	}
 	
 	/**
 	 * This method converts a provided file object into the Board that the game will
@@ -492,7 +515,7 @@ public class GameModel {
 	private void removeSuspects() {
 		boolean[] shadows = board.getLitTiles(getCharacterLocations());
 		boolean MrJackShadow = shadows[mrJack.whoIsMrJack().getLocation()];
-		for(MrJackCharacter c : usedMrJackCharacters) {
+		for(MrJackCharacter c : activeMrJackCharacters) {
 			if(shadows[c.getLocation()] != MrJackShadow)
 				c.setSuspect(false);
 		}

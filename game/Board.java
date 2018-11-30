@@ -184,7 +184,11 @@ public class Board {
 		}
 		
 		for(int charLoc : charLocations) {
+			if(charLoc == -1)
+				continue;
 			for(int adj : mapTiles[charLoc].getNeighbors()) {
+				if(adj == -1)
+					continue;
 				for(int neighbourCharLoc : charLocations) {
 					if(neighbourCharLoc == adj) {
 						witnessedChars[charLoc] = true;

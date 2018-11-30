@@ -34,6 +34,7 @@ public class JosephLane extends MrJackCharacter{
 			name = NAME;
 			numMoves = NUM_MOVES;
 			shortName = SHORT_NAME;
+			this.setLocation(-1);
 		}
 
 	//---  Operations   ---------------------------------------------------------------------------

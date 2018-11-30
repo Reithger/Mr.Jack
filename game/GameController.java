@@ -22,7 +22,8 @@ public class GameController {
 														 new MissStealthy(),
 														 new SirWilliamGull(),
 														 new Madame(),
-														 new JosephLane()};
+														 new JosephLane(),
+														 new InspectorAbberline()};
     private static final int SCREEN_WIDTH = 1222;
     private static final int SCREEN_HEIGHT = 854;
 	
@@ -51,6 +52,10 @@ public class GameController {
 
     public void startMrJack() {
     	theGame.startGame();
+    	updateView();
+    }
+    
+    public void startTurn() {
     	theGame.startTurn();
     	updateView();
     }
@@ -63,6 +68,10 @@ public class GameController {
     
     public void updateView(){
     	theView.update(theGame.outputGameState());
+    }
+    
+    public boolean placeCharacter(int character, int tile) {
+    	return theGame.placeMrJackCharacter(character, tile);
     }
     
     public boolean moveCharacter(int newTileLocation) {
@@ -110,7 +119,7 @@ public class GameController {
 	    			//end game
 	    		}
 	    		else {
-	    			theGame.startTurn();
+	    			startTurn();
 	    		}
 	    	}
 	    }
