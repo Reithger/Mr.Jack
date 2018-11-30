@@ -183,8 +183,10 @@ public abstract class MrJackCharacter implements GameCharacter{
 	 * 
 	 * @return - returns an int value describing the number of necessary values to perform the associated ability.
 	 */
-	
-	public abstract int requiredValuesForAbility();
+	//public abstract int requiredValuesForAbility();
+	public int requiredValuesForAbility() {
+		return 0;
+	}
 
 	public boolean[] abilityPermissionArray() {
 		boolean[] out = new boolean[5];
@@ -203,7 +205,10 @@ public abstract class MrJackCharacter implements GameCharacter{
 	 * @return - returns a boolean value representing whether or not this MrJackCharacter has to do their ability.
 	 */
 	
-	public abstract boolean hasToDoAbility();
+	//public abstract boolean hasToDoAbility();
+	public boolean hasToDoAbility() {
+		return true;
+	}
 
 	/**
 	 * This abstract method describes whether or not this MrJackCharacter can do their ability before
@@ -212,7 +217,10 @@ public abstract class MrJackCharacter implements GameCharacter{
 	 * @return - Returns a boolean action describing whether or not this MrJackCharacter can do their ability before moving.
 	 */
 	
-	public abstract boolean canDoAbilityBefore();
+	//public abstract boolean canDoAbilityBefore();
+	public boolean canDoAbilityBefore() {
+		return true;
+	}
 
 	/**
 	 * This abstract method describes whether or not this MrJackCharacter can do their ability while
@@ -221,7 +229,10 @@ public abstract class MrJackCharacter implements GameCharacter{
 	 * @return - Returns a boolean action describing whether or not this MrJackCharacter can do their ability while moving.
 	 */
 		
-	public abstract boolean canDoAbilityDuring();
+//	public abstract boolean canDoAbilityDuring();
+	public boolean canDoAbilityDuring() {
+		return true;
+	}
 
 	/**
 	 * This abstract method describes whether or not this MrJackCharacter can do their ability after
@@ -230,13 +241,19 @@ public abstract class MrJackCharacter implements GameCharacter{
 	 * @return - Returns a boolean action describing whether or not this MrJackCharacter can do their ability after moving.
 	 */
 	
-	public abstract boolean canDoAbilityAfter();
+//	public abstract boolean canDoAbilityAfter();
+	public boolean canDoAbilityAfter() {
+		return true;
+	}
 
 	/**
 	 * 
 	 * @return
 	 */
 	
-	public abstract boolean canMoveAfterAbility();
+	//public abstract boolean canMoveAfterAbility();
+	public boolean canMoveAfterAbility() {
+		return true;
+	}
 	
 }

@@ -23,6 +23,7 @@ public class InspectorAbberline extends MrJackCharacter {
 	
 	/** ArrayList<<r>Exit> object describing the Tile objects associated to this InspectorAbberline object*/
 	private ArrayList<Exit> relevantTiles;
+	private int[] interogate;
 
 //---  Constructors   -------------------------------------------------------------------------
 	
@@ -53,44 +54,17 @@ public class InspectorAbberline extends MrJackCharacter {
 	@Override
 	public void deriveFromModel(GameModel model) {
 		//get neighbour Tiles
+		//Tile.getNeighbors();
 	}
 	
 //---  Ability Queries   ----------------------------------------------------------------------
 	
-	@Override
-	public int requiredValuesForAbility() {
-		return 0;
-	}
-
-	@Override
-	public boolean hasToDoAbility() {
-		//he must do ability at some point
-		return true;
-	}
-
-	@Override
-	public boolean canDoAbilityBefore() {
-		//he can do ability now
-		return true;
-	}
-
 	@Override
 	public boolean canDoAbilityDuring() {
 		//he can not do ability now
 		return false;
 	}
 
-	@Override
-	public boolean canDoAbilityAfter() {
-		//he can do ability now
-		return true;
-	}
-	
-
-	@Override
-	public boolean canMoveAfterAbility() {
-		return true;
-	}
 }
 
 
