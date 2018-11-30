@@ -43,39 +43,23 @@ public class InspectorAbberline extends MrJackCharacter {
 
 	@Override
 	public boolean ability(Tile[] choice) {
-		Exit on = null;
-		Exit off = null;
-		for(Exit t : relevantTiles) {
-			if(t.getLocation() == choice[0].getLocation()) {
-				on = t;
-			}
-			if(t.getLocation() == choice[1].getLocation()) {
-				off = t;
-			}
-		}
-		if(on == null || off == null)
-			return false;
-		else {
-			on.setBlocked(true);
-			off.setBlocked(false);
-			return true;
-		}
+		//get neighbour tiles
+		//check for characters on tiles
+		//update those references with the restrictedmovementdec
+		
+		return false;
 	}
 
 	@Override
 	public void deriveFromModel(GameModel model) {
-		Board gameBoard = model.getBoard();
-		Tile [] exitTileSet = gameBoard.getTilesOfType('e');
-		for (Tile tile: exitTileSet){
-			relevantTiles.add((Exit) tile);
-		}
+		//get neighbour Tiles
 	}
 	
 //---  Ability Queries   ----------------------------------------------------------------------
 	
 	@Override
 	public int requiredValuesForAbility() {
-		return 2;
+		return 0;
 	}
 
 	@Override
