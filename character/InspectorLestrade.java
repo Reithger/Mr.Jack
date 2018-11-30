@@ -84,32 +84,9 @@ public class InspectorLestrade extends MrJackCharacter {
 	}
 
 	@Override
-	public boolean hasToDoAbility() {
-		//he must do ability at some point
-		return true;
-	}
-
-	@Override
-	public boolean canDoAbilityBefore() {
-		//he can do ability now
-		return true;
-	}
-
-	@Override
 	public boolean canDoAbilityDuring() {
 		//he can not do ability now
 		return false;
 	}
 
-	@Override
-	public boolean canDoAbilityAfter() {
-		//he can do ability now
-		return true;
-	}
-	
-
-	@Override
-	public boolean canMoveAfterAbility() {
-		return true;
-	}
 }

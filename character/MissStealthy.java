@@ -60,11 +60,6 @@ public class MissStealthy extends MrJackCharacter{
 //---  Ability Queries   ----------------------------------------------------------------------
 
 	@Override
-	public int requiredValuesForAbility() {
-		return 0;
-	}
-
-	@Override
 	public boolean hasToDoAbility() {
 		return false;
 	}
@@ -75,17 +70,8 @@ public class MissStealthy extends MrJackCharacter{
 	}
 
 	@Override
-	public boolean canDoAbilityDuring() {
-		return true;
-	}
-
-	@Override
 	public boolean canDoAbilityAfter() {
 		return false;
 	}
 
-	@Override
-	public boolean canMoveAfterAbility() {
-		return true;
-	}
 }

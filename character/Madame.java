@@ -58,11 +58,6 @@ public class Madame extends MrJackCharacter{
 	//---  Ability Queries   ----------------------------------------------------------------------
 		
 		@Override
-		public int requiredValuesForAbility() {
-			return 0;
-		}
-
-		@Override
 		public boolean hasToDoAbility() {
 			//she must do ability at some point
 			return false;
@@ -75,20 +70,9 @@ public class Madame extends MrJackCharacter{
 		}
 
 		@Override
-		public boolean canDoAbilityDuring() {
-			//she can not do ability now
-			return true;
-		}
-
-		@Override
 		public boolean canDoAbilityAfter() {
 			//she can't do ability now
 			return false;
 		}
-		
-
-		@Override
-		public boolean canMoveAfterAbility() {
-			return true;
-		}
+	
 }

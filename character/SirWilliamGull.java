@@ -69,11 +69,6 @@ public class SirWilliamGull extends MrJackCharacter{
 	}
 
 	@Override
-	public boolean canDoAbilityBefore() {
-		return true;
-	}
-
-	@Override
 	public boolean canDoAbilityDuring() {
 		return false;
 	}

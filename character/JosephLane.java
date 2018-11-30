@@ -73,28 +73,8 @@ public class JosephLane extends MrJackCharacter{
 		}
 
 		@Override
-		public boolean hasToDoAbility() {
-			return true;
-		}
-
-		@Override
-		public boolean canDoAbilityBefore() {
-			return true;
-		}
-
-		@Override
 		public boolean canDoAbilityDuring() {
 			return false;
-		}
-
-		@Override
-		public boolean canDoAbilityAfter() {
-			return true;
-		}
-
-		@Override
-		public boolean canMoveAfterAbility() {
-			return true;
 		}
 
 }
