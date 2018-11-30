@@ -4,6 +4,7 @@ import character.*;
 import java.io.*;
 
 import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 
 /**
  * Central point for communication between Model and View.
@@ -40,6 +41,7 @@ public class GameController {
 	
     public GameController(File f){
     	JFrame frame = readyFrame();
+    	frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         theGame = new GameModel(f, CHARACTERS);
         theView = new GameView(this);
         frame.add(theView);
