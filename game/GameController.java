@@ -71,6 +71,8 @@ public class GameController {
     }
     
     public boolean placeCharacter(int character, int tile) {
+    	if(tile < 0)
+    		return false;
     	return theGame.placeMrJackCharacter(character, tile);
     }
     
