@@ -43,7 +43,7 @@ public class JohnSmith extends MrJackCharacter {
 		numMoves = NUM_MOVES;
 		relevantTiles = new ArrayList<Lantern>();
 		shortName = SHORT_NAME;
-		this.setLocation(-1);
+		this.setLocation(null);
 	}
 
 //---  Operations   ---------------------------------------------------------------------------

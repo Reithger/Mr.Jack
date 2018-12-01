@@ -109,7 +109,7 @@ public class GameModel {
 				continue;
 			}
 			if(i == character && board.getTileAtLocation(tile).canShare()) {
-				activeMrJackCharacters[i].setLocation(tile);
+				activeMrJackCharacters[i].setLocation(board.getTileAtLocation(tile));
 				count++;
 			}
 		}
@@ -164,7 +164,7 @@ public class GameModel {
 	public boolean moveMrJackCharacter(int choice) {
 		boolean[] reachable = board.getLegalMovements(currentMrJackCharacter, getCharacterLocations());
 		if(reachable[choice]) {
-			currentMrJackCharacter.setLocation(choice);
+			currentMrJackCharacter.setLocation(board.getTileAtLocation(choice));
 		}
 		return reachable[choice];
 	}

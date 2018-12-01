@@ -79,7 +79,7 @@ public class RestrictedMovementDec extends MrJackCharacterDec{
 	}
 
 	@Override
-	public void setLocation(int index) {
+	public void setLocation(Tile index) {
 		character.setLocation(index);
 	}
 

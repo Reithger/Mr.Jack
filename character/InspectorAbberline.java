@@ -38,7 +38,7 @@ public class InspectorAbberline extends MrJackCharacter {
 		numMoves = NUM_MOVES;
 		relevantTiles = new ArrayList<Exit>();
 		shortName = SHORT_NAME;
-		this.setLocation(-1);
+		this.setLocation(null);
 	}
 
 //---  Operations   ---------------------------------------------------------------------------
@@ -59,13 +59,25 @@ public class InspectorAbberline extends MrJackCharacter {
 	}
 	
 //---  Ability Queries   ----------------------------------------------------------------------
-	
+
 	@Override
-	public boolean canDoAbilityDuring() {
-		//he can not do ability now
+	public boolean hasToDoAbility() {
+		//she must do ability at some point
 		return false;
 	}
 
+	@Override
+	public boolean canDoAbilityBefore() {
+		//she can't do ability now
+		return false;
+	}
+
+	@Override
+	public boolean canDoAbilityAfter() {
+		//she can't do ability now
+			return false;
+		}
+	
 }
 
 

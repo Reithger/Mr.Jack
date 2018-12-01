@@ -42,7 +42,7 @@ public class InspectorLestrade extends MrJackCharacter {
 		numMoves = NUM_MOVES;
 		relevantTiles = new ArrayList<Exit>();
 		shortName = SHORT_NAME;
-		this.setLocation(-1);
+		this.setLocation(null);
 	}
 
 //---  Operations   ---------------------------------------------------------------------------

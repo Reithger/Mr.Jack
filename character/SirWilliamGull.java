@@ -30,7 +30,7 @@ public class SirWilliamGull extends MrJackCharacter{
 		numMoves = NUM_MOVES;
 		characters = new MrJackCharacter[4];
 		shortName = SHORT_NAME;
-		this.setLocation(-1);
+		this.setLocation(null);
 	}
 
 //---  Operations   ---------------------------------------------------------------------------
@@ -42,7 +42,7 @@ public class SirWilliamGull extends MrJackCharacter{
 			//then return true, else return false
 			MrJackCharacter character = characters[x];
 			if(character.getLocation() == choice[0].getLocation()) {
-				int loc = character.getLocation();
+				Tile loc = character.getTileLocation();
 				character.setLocation(tileIndex);
 				tileIndex = loc;
 				return true;

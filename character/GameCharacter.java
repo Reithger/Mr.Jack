@@ -18,7 +18,7 @@ public interface GameCharacter {
 	public String getShortName();
 	public void setLit(boolean in);
 	public void setSuspect(boolean in);
-	public void setLocation(int index);
+	public void setLocation(Tile index);
 	public int requiredValuesForAbility();
 	public boolean hasToDoAbility();
 	public boolean canDoAbilityBefore();

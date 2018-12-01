@@ -16,7 +16,7 @@ public abstract class MrJackCharacter implements GameCharacter{
 //---  Instance Variables   -------------------------------------------------------------------
 	
 	/** int value representing which Tile in the Board's Tile[] this MrJackCharacter is on, by index reference*/
-	int tileIndex;
+	Tile tileIndex;
 	/** String object representing the name associated to this MrJackCharacter object*/
 	String name;
 	/** int value representing the number of moves this MrJackCharacter can make in one turn (how many spaces)*/
@@ -83,7 +83,7 @@ public abstract class MrJackCharacter implements GameCharacter{
 	 */
 	
 	public String convertToOutboundFormat() {
-		return shortName + " " + tileIndex + " " + (isLit ? "1" : "0") + " " + (isSuspect ? "1" : "0") + "\n";
+		return shortName + " " + (tileIndex == null ? -1 : tileIndex.getLocation()) + " " + (isLit ? "1" : "0") + " " + (isSuspect ? "1" : "0") + "\n";
 	}
 	
 //---  Getter Methods   -----------------------------------------------------------------------
@@ -116,6 +116,12 @@ public abstract class MrJackCharacter implements GameCharacter{
 	 */
 	
 	public int getLocation() {
+		if(tileIndex == null)
+			return -1;
+		return tileIndex.getLocation();
+	}
+	
+	public Tile getTileLocation() {
 		return tileIndex;
 	}
 	
@@ -171,7 +177,7 @@ public abstract class MrJackCharacter implements GameCharacter{
 	 * @param index - int value representing the new position in the Tile[] in Board that this MrJackCharacter resides in.
 	 */
 	
-	public void setLocation(int index) {
+	public void setLocation(Tile index) {
 		tileIndex = index;
 	}
 	
