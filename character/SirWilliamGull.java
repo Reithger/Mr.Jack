@@ -16,7 +16,7 @@ public class SirWilliamGull extends MrJackCharacter{
 //---  Instance Variables   -------------------------------------------------------------------
 
 	/** ArrayList<<r>MrJackCharacter> object describing the Tile objects associated to this InspectorLestrade object*/
-	private MrJackCharacter[] characters;
+	private GameCharacter[] characters;
 
 //---  Constructors   -------------------------------------------------------------------------
 

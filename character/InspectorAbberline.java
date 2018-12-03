@@ -48,10 +48,12 @@ public class InspectorAbberline extends MrJackCharacter {
 		//get neighbor tiles
 		int[] neighbors=getTileLocation().getNeighbors();
 		//check for characters on tiles
+		
+		int length=charactersInPlay.length;
 		for(int tileLoc: neighbors) {
-			for(GameCharacter m: charactersInPlay) {
-				if(m.getLocation()==tileLoc) {
-					m=new RestrictedMovementDec(m);
+			for(int i=0; i<length;i++) {
+				if(charactersInPlay[i].getLocation()==tileLoc) {
+					charactersInPlay[i]=new RestrictedMovementDec(charactersInPlay[i]);
 				}
 			}
 		}

@@ -87,14 +87,19 @@ public class GameModel {
 	public void startGame() {
 		mrJack = new MrJack();
 		detective = new Detective();
+		
 		board = deriveBoard(boardStructure);
 		player = 0;
 		clock = deriveClock();
-		activeGameCharacters = deriveGameCharacters(allGameCharacters); 
+		 
 		gameOver = false;
 		selectedGameCharacters.clear();
 		currentGameCharacter = null;
 		usedGameCharacters = new MrJackCharacter[0];
+		
+		activeGameCharacters = deriveGameCharacters(allGameCharacters);
+		
+		
 		Random rand = new Random();
 		initializeCharacters(activeGameCharacters, rand);//added helper methods
 		mrJack.assignMrJack(activeGameCharacters[rand.nextInt(activeGameCharacters.length)]);
@@ -425,9 +430,18 @@ public class GameModel {
 		for(GameCharacter mjc : activeGameCharacters) {
 			initializeCharStatus(mjc);
 			mjc.deriveFromModel(this);
-			//initializeCharLocation(mjc,random,used);	
+			initializeCharLocation(mjc,random,used);	
 		}
 	}//initializeCharacters
+	
+	private void initializeCharLocation(GameCharacter m, Random r, HashSet<Integer> h) {
+		int loc = r.nextInt(board.getNumberOfTiles());
+		while(h.contains(loc) || !board.getTileAtLocation(loc).canShare()) {
+			loc = r.nextInt(board.getNumberOfTiles());
+		}
+		m.setLocation(board.getTileAtLocation(loc));
+		h.add(loc);
+	}
 	
 	/**
 	 * 
