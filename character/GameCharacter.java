@@ -13,6 +13,7 @@ public interface GameCharacter {
 	public boolean getLit();
 	public boolean getSuspect();
 	public int getLocation();
+	public Tile getTileLocation();
 	public String getName();
 	public int getDistance();
 	public String getShortName();

@@ -24,6 +24,7 @@ public class InspectorAbberline extends MrJackCharacter {
 	/** ArrayList<<r>Exit> object describing the Tile objects associated to this InspectorAbberline object*/
 	private ArrayList<Exit> relevantTiles;
 	private GameCharacter[] charactersInPlay;
+	private boolean[] restrictedMovementChars;
 
 //---  Constructors   -------------------------------------------------------------------------
 	
@@ -45,19 +46,16 @@ public class InspectorAbberline extends MrJackCharacter {
 
 	@Override
 	public boolean ability(Tile[] choice) {
-		//get neighbor tiles
-		int[] neighbors=getTileLocation().getNeighbors();
-		//check for characters on tiles
-		
-		int length=charactersInPlay.length;
-		for(int tileLoc: neighbors) {
-			for(int i=0; i<length;i++) {
+		int[] abberlineNeighbourTileLocs=getTileLocation().getNeighbors();
+		int numCharsInPlay=charactersInPlay.length;
+		for(int tileLoc: abberlineNeighbourTileLocs) {
+			for(int i=0; i<numCharsInPlay;i++) {
 				if(charactersInPlay[i].getLocation()==tileLoc) {
 					charactersInPlay[i]=new RestrictedMovementDec(charactersInPlay[i]);
+					restrictedMovementChars[i]=true;
 				}
 			}
 		}
-		//update those references with the restrictedmovementdec
 		
 		return false;
 	}
@@ -65,6 +63,16 @@ public class InspectorAbberline extends MrJackCharacter {
 	@Override
 	public void deriveFromModel(GameModel model) {
 		charactersInPlay=model.getCharacters();
+		restrictedMovementChars=new boolean[charactersInPlay.length];
+	}
+	
+	public void removeRestrictions() {
+		int numCharsInPlay=charactersInPlay.length;
+		for(int i=0; i<numCharsInPlay;i++) {
+			if(restrictedMovementChars[i]==true) {
+				charactersInPlay[i]=((RestrictedMovementDec)charactersInPlay[i]).removeDecorator();
+			}
+		}
 	}
 	
 //---  Ability Queries   ----------------------------------------------------------------------

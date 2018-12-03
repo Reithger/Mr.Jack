@@ -113,4 +113,14 @@ public class RestrictedMovementDec extends MrJackCharacterDec{
 		return character.canMoveAfterAbility();
 	}
 
+	@Override
+	public Tile getTileLocation() {
+		return character.getTileLocation();
+	}
+
+	@Override
+	public boolean[] abilityPermissionArray() {
+		return character.abilityPermissionArray();
+	}
+
 }

@@ -233,6 +233,14 @@ public class GameModel {
 			return false;
 	}
 	
+	public void resetCharacters() {
+		for(GameCharacter gc: allGameCharacters) {
+			if(gc.getName()=="InspectorAbberline") {
+				gc.removeRestrictions();
+			}
+		}
+	}
+	
 //---  Setter Methods   -----------------------------------------------------------------------
 
 	/**

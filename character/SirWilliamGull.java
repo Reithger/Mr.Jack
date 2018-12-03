@@ -40,7 +40,7 @@ public class SirWilliamGull extends MrJackCharacter{
 		for(int x = 0; x < characters.length; x++){
 			//if the character on the tile is in the list of characters in play
 			//then return true, else return false
-			MrJackCharacter character = characters[x];
+			GameCharacter character = characters[x];
 			if(character.getLocation() == choice[0].getLocation()) {
 				Tile loc = character.getTileLocation();
 				character.setLocation(tileIndex);
