@@ -7,7 +7,7 @@ public class RestrictedMovementDec extends MrJackCharacterDec{
 
 	private int restrictedDist;
 	
-	public RestrictedMovementDec(MrJackCharacter mrJackChar) {
+	public RestrictedMovementDec(GameCharacter mrJackChar) {
 		super(mrJackChar);
 	}
 

@@ -23,7 +23,7 @@ public class InspectorAbberline extends MrJackCharacter {
 	
 	/** ArrayList<<r>Exit> object describing the Tile objects associated to this InspectorAbberline object*/
 	private ArrayList<Exit> relevantTiles;
-	private int[] interogate;
+	private GameCharacter[] charactersInPlay;
 
 //---  Constructors   -------------------------------------------------------------------------
 	
@@ -45,8 +45,16 @@ public class InspectorAbberline extends MrJackCharacter {
 
 	@Override
 	public boolean ability(Tile[] choice) {
-		//get neighbour tiles
+		//get neighbor tiles
+		int[] neighbors=getTileLocation().getNeighbors();
 		//check for characters on tiles
+		for(int tileLoc: neighbors) {
+			for(GameCharacter m: charactersInPlay) {
+				if(m.getLocation()==tileLoc) {
+					m=new RestrictedMovementDec(m);
+				}
+			}
+		}
 		//update those references with the restrictedmovementdec
 		
 		return false;
@@ -54,8 +62,7 @@ public class InspectorAbberline extends MrJackCharacter {
 
 	@Override
 	public void deriveFromModel(GameModel model) {
-		//get neighbour Tiles
-		//Tile.getNeighbors();
+		charactersInPlay=model.getCharacters();
 	}
 	
 //---  Ability Queries   ----------------------------------------------------------------------

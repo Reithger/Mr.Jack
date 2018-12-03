@@ -2,7 +2,8 @@ package player;
 
 import java.util.ArrayList;
 
-import character.MrJackCharacter;
+import character.GameCharacter;
+
 
 /**
  * This class models the Detective type of Player for Mr. Jack.
@@ -19,7 +20,7 @@ public class Detective extends Player{
 	
 	public Detective() {
 		mrJack = null;
-		alibis = new ArrayList<MrJackCharacter>();
+		alibis = new ArrayList<GameCharacter>();
 	}
 	
 //---  Getter Methods   -----------------------------------------------------------------------
@@ -33,7 +34,7 @@ public class Detective extends Player{
 	 * @return - Returns a boolean value representing the result of the accusation; true if successful, false otherwise.
 	 */
 	
-	public boolean hasWonAccusation(MrJackCharacter accused) {
+	public boolean hasWonAccusation(GameCharacter accused) {
 		if(accused.equals(mrJack))
 			return true;
 		return false;

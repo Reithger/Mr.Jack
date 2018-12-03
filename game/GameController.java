@@ -42,7 +42,6 @@ public class GameController {
 	
     public GameController(File f){
     	JFrame frame = readyFrame();
-    	frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         theGame = new GameModel(f, CHARACTERS);
         theView = new GameView(this);
         frame.add(theView);
@@ -73,7 +72,7 @@ public class GameController {
     public boolean placeCharacter(int character, int tile) {
     	if(tile < 0)
     		return false;
-    	return theGame.placeMrJackCharacter(character, tile);
+    	return theGame.placeGameCharacter(character, tile);
     }
     
     public boolean moveCharacter(int newTileLocation) {
@@ -81,7 +80,7 @@ public class GameController {
     		updateView();
     		return movedCharacter;
     	}
-    	movedCharacter = theGame.moveMrJackCharacter(newTileLocation); 
+    	movedCharacter = theGame.moveGameCharacter(newTileLocation); 
     	updateView();
     	restartCharacterUse();
     	return movedCharacter;
@@ -103,7 +102,7 @@ public class GameController {
     		updateView();
     		return choseCharacter;
     	}
-    	choseCharacter = theGame.chooseMrJackCharacter(tilePosition);
+    	choseCharacter = theGame.chooseGameCharacter(tilePosition);
     	System.out.println("Choose: " + tilePosition + " " + choseCharacter);
     	updateView();
     	return choseCharacter;
@@ -168,6 +167,7 @@ public class GameController {
 		JFrame frame = new JFrame();
 		frame.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 		frame.setVisible(true);
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		return frame;
 	}
     

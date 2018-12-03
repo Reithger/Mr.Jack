@@ -20,6 +20,7 @@ public interface GameCharacter {
 	public void setSuspect(boolean in);
 	public void setLocation(Tile index);
 	public int requiredValuesForAbility();
+	public boolean[] abilityPermissionArray();
 	public boolean hasToDoAbility();
 	public boolean canDoAbilityBefore();
 	public boolean canDoAbilityDuring();

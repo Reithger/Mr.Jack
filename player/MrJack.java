@@ -1,6 +1,6 @@
 package player;
 
-import character.MrJackCharacter;
+import character.GameCharacter;
 import java.util.ArrayList;
 
 /**
@@ -26,7 +26,7 @@ public class MrJack extends Player{
 	
 	public MrJack() {
 		mrJack = null;
-		alibis = new ArrayList<MrJackCharacter>();
+		alibis = new ArrayList<GameCharacter>();
 	}
 	
 //---  Getter Methods   -----------------------------------------------------------------------
@@ -38,7 +38,7 @@ public class MrJack extends Player{
 	 * @return - Returns a MrJackCharacter object describing 
 	 */
 	
-	public MrJackCharacter whoIsMrJack() {
+	public GameCharacter whoIsMrJack() {
 		return mrJack;
 	}
 

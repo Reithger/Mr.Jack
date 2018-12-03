@@ -6,6 +6,8 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+
+import character.GameCharacter;
 import character.MrJackCharacter;
 import java.util.Random;
 
@@ -34,15 +36,15 @@ public class GameModel {
 //---  Instance Variables   -------------------------------------------------------------------
 
 	/** MrJackCharacter[] object representing all of the viable MrJackCharacters that can be used in this game*/
-	MrJackCharacter[] allMrJackCharacters;
+	GameCharacter[] allGameCharacters;
 	/** MrJackCharacter[] object representing the subset of allMrJackCharacters that are being used in this instance of the game*/
-	MrJackCharacter[] activeMrJackCharacters;
+	GameCharacter[] activeGameCharacters;
 	/** MrJackCharacter[] object representing the subset of activeMrJackCharacters that have already been used in this round*/
-	MrJackCharacter[] usedMrJackCharacters;
+	GameCharacter[] usedGameCharacters;
 	/** MrJackCharacter representing the chosen character that the active player is using for their turn*/
-	MrJackCharacter currentMrJackCharacter;
+	GameCharacter currentGameCharacter;
 	/** HashSet<<r>Integer> object representing which MrJackCharacters in a turn have already been used by index*/
-	ArrayList<Integer> selectedMrJackCharacters;
+	ArrayList<Integer> selectedGameCharacters;
 	/** Detective object representing one of the two players in this instance of the game*/
 	Detective detective;
 	/** MrJack object representing one of the two players in this instance of the game*/
@@ -65,13 +67,13 @@ public class GameModel {
 	 * a list of potential Characters to use in an instance of the game.
 	 * 
 	 * @param structure - File object describing the nature of the game's board
-	 * @param potentialMrJackCharacters - List of MrJackCharacter objects to be used in the game.
+	 * @param potentialGameCharacters - List of MrJackCharacter objects to be used in the game.
 	 */
 	
-	public GameModel(File structure, MrJackCharacter ... potentialMrJackCharacters) {
+	public GameModel(File structure, GameCharacter ... potentialGameCharacters) {
 		boardStructure = structure;
-		allMrJackCharacters = potentialMrJackCharacters;
-		selectedMrJackCharacters = new ArrayList<Integer>();
+		allGameCharacters = potentialGameCharacters;
+		selectedGameCharacters = new ArrayList<Integer>();
 	}
 	
 //---  Game Behaviors   -----------------------------------------------------------------------
@@ -88,28 +90,28 @@ public class GameModel {
 		board = deriveBoard(boardStructure);
 		player = 0;
 		clock = deriveClock();
-		activeMrJackCharacters = deriveMrJackCharacters(allMrJackCharacters); 
+		activeGameCharacters = deriveGameCharacters(allGameCharacters); 
 		gameOver = false;
-		selectedMrJackCharacters.clear();
-		currentMrJackCharacter = null;
-		usedMrJackCharacters = new MrJackCharacter[0];
+		selectedGameCharacters.clear();
+		currentGameCharacter = null;
+		usedGameCharacters = new MrJackCharacter[0];
 		Random rand = new Random();
-		initializeCharacters(activeMrJackCharacters, rand);//added helper methods
-		mrJack.assignMrJack(activeMrJackCharacters[rand.nextInt(activeMrJackCharacters.length)]);
+		initializeCharacters(activeGameCharacters, rand);//added helper methods
+		mrJack.assignMrJack(activeGameCharacters[rand.nextInt(activeGameCharacters.length)]);
 	}
 
-	public boolean placeMrJackCharacter(int character, int tile) {
-		if(character < 0 || character >= activeMrJackCharacters.length || tile == -1) {
+	public boolean placeGameCharacter(int character, int tile) {
+		if(character < 0 || character >= activeGameCharacters.length || tile == -1) {
 			return false;
 		}
 		int count = 0;
-		for(int i = 0; i < activeMrJackCharacters.length; i++) {
-			if(activeMrJackCharacters[i].getLocation() != -1) {
+		for(int i = 0; i < activeGameCharacters.length; i++) {
+			if(activeGameCharacters[i].getLocation() != -1) {
 				count++;
 				continue;
 			}
 			if(i == character && board.getTileAtLocation(tile).canShare()) {
-				activeMrJackCharacters[i].setLocation(board.getTileAtLocation(tile));
+				activeGameCharacters[i].setLocation(board.getTileAtLocation(tile));
 				count++;
 			}
 		}
@@ -123,9 +125,9 @@ public class GameModel {
 	 */
 	
 	public void startTurn() {
-		usedMrJackCharacters = characterSetPerTurn(usedMrJackCharacters);
-		selectedMrJackCharacters = new ArrayList<Integer>();
-		currentMrJackCharacter = null;
+		usedGameCharacters = characterSetPerTurn(usedGameCharacters);
+		selectedGameCharacters = new ArrayList<Integer>();
+		currentGameCharacter = null;
 	}
 
 	/**
@@ -136,20 +138,20 @@ public class GameModel {
 	 * @return - Returns a boolean value describing whether or not the user choice was legal
 	 */
 	
-	public boolean chooseMrJackCharacter(int choice) {
+	public boolean chooseGameCharacter(int choice) {
 		int loc = -1;
-		for(MrJackCharacter mjc : activeMrJackCharacters) {
+		for(GameCharacter mjc : activeGameCharacters) {
 			loc++;
-			if(selectedMrJackCharacters.contains(loc))
+			if(selectedGameCharacters.contains(loc))
 				continue;
 			if(mjc.getLocation() == choice) {
-				currentMrJackCharacter = mjc;
+				currentGameCharacter = mjc;
 				break;
 			}
 		}
-		if(currentMrJackCharacter == null)
+		if(currentGameCharacter == null)
 			return false;
-		selectedMrJackCharacters.add(loc);
+		selectedGameCharacters.add(loc);
 		return true;
 	}
 
@@ -161,10 +163,10 @@ public class GameModel {
 	 * @return - Returns a boolean value describing whether or not the chosen location was legal
 	 */
 	
-	public boolean moveMrJackCharacter(int choice) {
-		boolean[] reachable = board.getLegalMovements(currentMrJackCharacter, getCharacterLocations());
+	public boolean moveGameCharacter(int choice) {
+		boolean[] reachable = board.getLegalMovements(currentGameCharacter, getCharacterLocations());
 		if(reachable[choice]) {
-			currentMrJackCharacter.setLocation(board.getTileAtLocation(choice));
+			currentGameCharacter.setLocation(board.getTileAtLocation(choice));
 		}
 		return reachable[choice];
 	}
@@ -178,8 +180,8 @@ public class GameModel {
 	 */
 	
 	public boolean characterAction(int[] choice) {
-		if(choice.length == currentMrJackCharacter.requiredValuesForAbility()) {
-			return (currentMrJackCharacter.ability(board.getTiles(choice)));
+		if(choice.length == currentGameCharacter.requiredValuesForAbility()) {
+			return (currentGameCharacter.ability(board.getTiles(choice)));
 		}
 		return false;
 	}
@@ -193,8 +195,8 @@ public class GameModel {
 	 */
 	
 	public boolean accuseCharacter(int choice) {
-		MrJackCharacter accused = null;
-		for(MrJackCharacter mjc : activeMrJackCharacters) {
+		GameCharacter accused = null;
+		for(GameCharacter mjc : activeGameCharacters) {
 			if(mjc.getLocation() == choice)
 				accused = mjc;
 		}
@@ -212,10 +214,10 @@ public class GameModel {
 	
 	public boolean endTurn() {
 		clock.iterateTurn();
-		activeMrJackCharacters = clock.getTurn() % 2 == 0 ? null : activeMrJackCharacters;	//and other stuff
+		activeGameCharacters = clock.getTurn() % 2 == 0 ? null : activeGameCharacters;	//and other stuff
 		player = clock.getTurn() % 2;
-		selectedMrJackCharacters.clear();
-		currentMrJackCharacter = null;
+		selectedGameCharacters.clear();
+		currentGameCharacter = null;
 		removeSuspects();
 		
 		if(mrJack.hasWonTimer(clock.getTurn() == NUMBER_OF_TURNS) || mrJack.hasWonEscape(board.getTileIdentity(mrJack.whoIsMrJack().getLocation()) == 'e', clock.getTurn())) {
@@ -233,7 +235,7 @@ public class GameModel {
 	 */
 	
 	public void clearCurrentCharacter() {
-		currentMrJackCharacter = null;
+		currentGameCharacter = null;
 	}
 	
 //---  Getter Methods   -----------------------------------------------------------------------
@@ -253,9 +255,9 @@ public class GameModel {
 		
 		//-- MrJackCharacters  --------------------------------
 		
-		out += activeMrJackCharacters.length + "\n";
+		out += activeGameCharacters.length + "\n";
 		
-		for(MrJackCharacter mjc : activeMrJackCharacters) {	//Character locations
+		for(GameCharacter mjc : activeGameCharacters) {	//Character locations
 			out += mjc.convertToOutboundFormat();
 		}
 		
@@ -269,31 +271,31 @@ public class GameModel {
 		
 		//-- Characters used so far  --------------------------
 		
-		out += activeMrJackCharacters.length + "\n";
+		out += activeGameCharacters.length + "\n";
 		
 		int count = 0;
 		
-		for(int i : selectedMrJackCharacters) {
-			out += activeMrJackCharacters[i].getShortName() + "\n";
+		for(int i : selectedGameCharacters) {
+			out += activeGameCharacters[i].getShortName() + "\n";
 			count++;
 		}
 		
-		while(count < activeMrJackCharacters.length) {
+		while(count < activeGameCharacters.length) {
 			count++;
 			out += "-\n";
 		}
 				
 		//-- Active Character  --------------------------------
 
-		if(currentMrJackCharacter != null)
-			out += currentMrJackCharacter.getName() + "\n" + currentMrJackCharacter.requiredValuesForAbility() + "\n";
+		if(currentGameCharacter != null)
+			out += currentGameCharacter.getName() + "\n" + currentGameCharacter.requiredValuesForAbility() + "\n";
 		else
 			out += "null\n-1\n";
 		
 		//-- Active Character Abilities  ----------------------
 		
-		if(currentMrJackCharacter != null) {
-			boolean[] abilityPermissions = currentMrJackCharacter.abilityPermissionArray();
+		if(currentGameCharacter != null) {
+			boolean[] abilityPermissions = currentGameCharacter.abilityPermissionArray();
 			out += abilityPermissions.length + "\n";
 			for(int i = 0; i < abilityPermissions.length; i++) {
 				out += (abilityPermissions[i] ? "1" : "0") + (i + 1 < abilityPermissions.length ? " " : "\n" );
@@ -306,7 +308,7 @@ public class GameModel {
 		//-- Reachable Tiles  ---------------------------------
 		
 													//Active character, reach, ability
-		boolean[] reach = board.getLegalMovements(currentMrJackCharacter, getCharacterLocations());
+		boolean[] reach = board.getLegalMovements(currentGameCharacter, getCharacterLocations());
 		
 
 		
@@ -322,8 +324,8 @@ public class GameModel {
 	
 		//-- Suspected Characters  ----------------------------
 		
-		for(int i = 0; i < activeMrJackCharacters.length; i++)
-			out += (activeMrJackCharacters[i].getSuspect() == true ? "1" : "0") + (i + 1 == activeMrJackCharacters.length ? "\n" : " ");
+		for(int i = 0; i < activeGameCharacters.length; i++)
+			out += (activeGameCharacters[i].getSuspect() == true ? "1" : "0") + (i + 1 == activeGameCharacters.length ? "\n" : " ");
 		
 		//-- Barricade  ---------------------------------------
 		
@@ -344,7 +346,7 @@ public class GameModel {
 	 */
 	
 	public String getWhoIsPlayer() {
-		if(selectedMrJackCharacters.size() == 0 || selectedMrJackCharacters.size() == NUMBER_ACTIVE_CHARACTERS/2 - 1) {
+		if(selectedGameCharacters.size() == 0 || selectedGameCharacters.size() == NUMBER_ACTIVE_CHARACTERS/2 - 1) {
 			return PLAYERS[player];
 		}
 		else {
@@ -360,7 +362,7 @@ public class GameModel {
 	 */
 	
 	public int howManyValuesForAction() {
-		return currentMrJackCharacter.requiredValuesForAbility();
+		return currentGameCharacter.requiredValuesForAbility();
 	}
 
 	/**
@@ -371,7 +373,7 @@ public class GameModel {
 	 */
 	
 	public boolean roundOver() {
-		return (selectedMrJackCharacters.size() == NUMBER_ACTIVE_CHARACTERS/2);
+		return (selectedGameCharacters.size() == NUMBER_ACTIVE_CHARACTERS/2);
 	}
 
 	/**
@@ -381,8 +383,8 @@ public class GameModel {
 	 * @return - Returns a MrJackCharacter[] object containing all available MrJackCharacter objects.
 	 */
 	
-	public MrJackCharacter[] getCharacters(){
-		return allMrJackCharacters;
+	public GameCharacter[] getCharacters(){
+		return allGameCharacters;
 	}
 
 	/**
@@ -401,9 +403,9 @@ public class GameModel {
 	 */
 	
 	public int[] getCharacterLocations() {
-		int[] out = new int[activeMrJackCharacters.length];
+		int[] out = new int[activeGameCharacters.length];
 		int ind = 0;
-		for(MrJackCharacter mjc : activeMrJackCharacters) {
+		for(GameCharacter mjc : activeGameCharacters) {
 			out[ind++] = mjc.getLocation();
 		}
 		return out;
@@ -418,9 +420,9 @@ public class GameModel {
 	 * @param random
 	 */
 	
-	private void initializeCharacters(MrJackCharacter[] chars, Random random) {
+	private void initializeCharacters(GameCharacter[] chars, Random random) {
 		HashSet<Integer> used = new HashSet<Integer>();
-		for(MrJackCharacter mjc : activeMrJackCharacters) {
+		for(GameCharacter mjc : activeGameCharacters) {
 			initializeCharStatus(mjc);
 			mjc.deriveFromModel(this);
 			//initializeCharLocation(mjc,random,used);	
@@ -432,7 +434,7 @@ public class GameModel {
 	 * @param m
 	 */
 	
-	private void initializeCharStatus(MrJackCharacter m) {
+	private void initializeCharStatus(GameCharacter m) {
 		m.setSuspect(true);
 		m.setLit(false);
 	}//initializeCharStatus
@@ -484,16 +486,16 @@ public class GameModel {
 	 * @return - Returns a MrJackCharacter[] object containing the the MrJackCharacters to use in this turn.
 	 */
 	
-	private MrJackCharacter[] deriveMrJackCharacters(MrJackCharacter[] potential) {
+	private GameCharacter[] deriveGameCharacters(GameCharacter[] potential) {
 		int maxSize = NUMBER_ACTIVE_CHARACTERS;
-		MrJackCharacter[] toUse = new MrJackCharacter[maxSize];
+		GameCharacter[] toUse = new MrJackCharacter[maxSize];
 		Random rand = new Random();
 		int index = 0;
 		
 		while(toUse[maxSize-1] == null) {
-			MrJackCharacter possible = potential[rand.nextInt(potential.length)];
+			GameCharacter possible = potential[rand.nextInt(potential.length)];
 			boolean present = false;
-			for(MrJackCharacter mjc : toUse) {
+			for(GameCharacter mjc : toUse) {
 				if(mjc != null && mjc.getName().equals(possible.getName())){
 					present = true;
 				}
@@ -515,7 +517,7 @@ public class GameModel {
 	private void removeSuspects() {
 		boolean[] shadows = board.getLitTiles(getCharacterLocations());
 		boolean MrJackShadow = shadows[mrJack.whoIsMrJack().getLocation()];
-		for(MrJackCharacter c : activeMrJackCharacters) {
+		for(GameCharacter c : activeGameCharacters) {
 			if(shadows[c.getLocation()] != MrJackShadow)
 				c.setSuspect(false);
 		}
@@ -528,32 +530,32 @@ public class GameModel {
 	 * @return - Returns a MrJackCharacter[] object containing the the MrJackCharacters to use in this turn.
 	 */
 	
-	private MrJackCharacter[] characterSetPerTurn(MrJackCharacter[] potential) {
-		MrJackCharacter[] newMrJackCharacters = new MrJackCharacter[NUMBER_ACTIVE_CHARACTERS];
+	private GameCharacter[] characterSetPerTurn(GameCharacter[] potential) {
+		GameCharacter[] newGameCharacters = new GameCharacter[NUMBER_ACTIVE_CHARACTERS];
 		int index = 0;
 		Random rand = new Random();
 		
-		while(newMrJackCharacters[NUMBER_ACTIVE_CHARACTERS - 1] == null) {
-			int ind = rand.nextInt(activeMrJackCharacters.length);
-			MrJackCharacter possible = allMrJackCharacters[ind];
+		while(newGameCharacters[NUMBER_ACTIVE_CHARACTERS - 1] == null) {
+			int ind = rand.nextInt(activeGameCharacters.length);
+			GameCharacter possible = allGameCharacters[ind];
 			boolean result = true;
 			if(potential != null) {
-				for(MrJackCharacter mjc : potential)
+				for(GameCharacter mjc : potential)
 					if(mjc != null && possible.getName().equals(mjc.getName())) {
 						result = false;
 						break;
 					}
 			}
-			for(MrJackCharacter mjc : newMrJackCharacters) {
+			for(GameCharacter mjc : newGameCharacters) {
 				if(mjc != null && mjc.getName().equals(possible.getName())) {
 					result = false;
 					break;
 				}
 			}
 			if(result)
-				newMrJackCharacters[index++] = possible;
+				newGameCharacters[index++] = possible;
 		}
-		return newMrJackCharacters;
+		return newGameCharacters;
 	}
 
 }

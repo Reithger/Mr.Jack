@@ -3,7 +3,8 @@ package game;
 import tile.Tile;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import character.MrJackCharacter;
+
+import character.GameCharacter;
 import java.util.HashMap;
 import tile.Lantern;
 import tile.Manhole;
@@ -64,7 +65,7 @@ public class Board {
 	 */
 	
 	//-------related to character------
-	public boolean[] getLegalMovements(MrJackCharacter activeCharacter, int[] characterLocations) {
+	public boolean[] getLegalMovements(GameCharacter activeCharacter, int[] characterLocations) {
 		boolean[] validDestinationTiles = new boolean[mapTiles.length];
 		
 		if(activeCharacter == null)

@@ -2,13 +2,13 @@ package character;
 
 public abstract class MrJackCharacterDec implements GameCharacter {
 
-	protected MrJackCharacter character;
+	protected GameCharacter character;
 	
-	public MrJackCharacterDec(MrJackCharacter mrJackChar) {
+	public MrJackCharacterDec(GameCharacter mrJackChar) {
 		character=mrJackChar;
 	}
 		
-	public MrJackCharacter removeDecorator() {
+	public GameCharacter removeDecorator() {
 		return character;
 	}
 }

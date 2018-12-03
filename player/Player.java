@@ -1,5 +1,6 @@
 package player;
 
+import character.GameCharacter;
 import character.MrJackCharacter;
 import java.util.ArrayList;
 
@@ -15,9 +16,9 @@ public abstract class Player {
 //---  Instance Variables   -------------------------------------------------------------------
 
 	/** MrJackCharacter object representing the MrJackCharacter character that is Mr. Jack in this instance of the game.*/
-	MrJackCharacter mrJack;
+	GameCharacter mrJack;
 	/** MrJackCharacter[] object representing the set of MrJackCharacters that have been proven innocent.*/
-	ArrayList<MrJackCharacter> alibis;
+	ArrayList<GameCharacter> alibis;
 	
 //---  Getter Methods   -----------------------------------------------------------------------
 	
@@ -29,7 +30,7 @@ public abstract class Player {
 	 * @return - returns a MrJackCharacter[] object containing MrJackCharacters with alibis.
 	 */
 	
-	public ArrayList<MrJackCharacter> getAlibis(){
+	public ArrayList<GameCharacter> getAlibis(){
 		return alibis;
 	}
 	
@@ -41,7 +42,7 @@ public abstract class Player {
 	 * @param inJack - MrJackCharacter object representing Mr. Jack for this iteration of the game.
 	 */
 	
-	public void assignMrJack(MrJackCharacter inJack) {
+	public void assignMrJack(GameCharacter inJack) {
 		mrJack = inJack;
 	}
 	
