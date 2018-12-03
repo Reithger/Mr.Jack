@@ -9,6 +9,7 @@ import java.util.HashSet;
 
 import character.GameCharacter;
 import character.MrJackCharacter;
+import character.InspectorAbberline;
 import java.util.Random;
 
 /**
@@ -130,6 +131,11 @@ public class GameModel {
 	 */
 	
 	public void startTurn() {
+		for(GameCharacter gc: allGameCharacters) {
+			if(gc.getName()=="InspectorAbberline") {
+				gc.ability(null);
+			}
+		}
 		usedGameCharacters = characterSetPerTurn(usedGameCharacters);
 		selectedGameCharacters = new ArrayList<Integer>();
 		currentGameCharacter = null;
@@ -236,7 +242,7 @@ public class GameModel {
 	public void resetCharacters() {
 		for(GameCharacter gc: allGameCharacters) {
 			if(gc.getName()=="InspectorAbberline") {
-				gc.removeRestrictions();
+				((InspectorAbberline)gc).removeRestrictions();
 			}
 		}
 	}
