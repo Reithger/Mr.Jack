@@ -132,10 +132,10 @@ public class GameModel {
 	 */
 	
 	public void startTurn() {
+		System.out.println("Start Turn");
 		for(GameCharacter gc: activeGameCharacters) {
 			if(gc.getName().equals("InspectorAbberline")) {
 				gc.ability(null);
-				System.out.println("Abberline ability called?");
 			}
 		}
 		usedGameCharacters = characterSetPerTurn(usedGameCharacters);
