@@ -1,6 +1,8 @@
 package character;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import game.Board;
 import tile.Tile;
 import tile.Exit;
@@ -46,14 +48,13 @@ public class InspectorAbberline extends MrJackCharacter {
 
 	@Override
 	public boolean ability(Tile[] choice) {
-		System.out.println("Abberline ability called" );
 		int[] abberlineNeighbourTileLocs=getTileLocation().getNeighbors();
 		int numCharsInPlay=charactersInPlay.length;
 		for(int tileLoc: abberlineNeighbourTileLocs) {
 			for(int i=0; i<numCharsInPlay;i++) {
-				if(charactersInPlay[i].getLocation()==tileLoc && restrictedMovementChars[i]==false) {
+				
+				if(charactersInPlay[i].getLocation()==tileLoc && restrictedMovementChars[i]==false && charactersInPlay[i].getLocation()!=getLocation()) {
 					charactersInPlay[i]=new RestrictedMovementDec(charactersInPlay[i]);
-					System.out.println("This character should have movement restricted: "+ charactersInPlay[i].getName());
 					restrictedMovementChars[i]=true;
 				}
 			}
