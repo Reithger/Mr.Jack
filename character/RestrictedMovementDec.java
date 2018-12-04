@@ -5,7 +5,7 @@ import tile.Tile;
 
 public class RestrictedMovementDec extends MrJackCharacterDec{
 
-	private int restrictedDist;
+	private int restrictedDist=1;
 	
 	public RestrictedMovementDec(GameCharacter mrJackChar) {
 		super(mrJackChar);

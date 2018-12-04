@@ -9,6 +9,7 @@ import java.util.HashSet;
 
 import character.GameCharacter;
 import character.MrJackCharacter;
+import character.RestrictedMovementDec;
 import character.InspectorAbberline;
 import java.util.Random;
 
@@ -131,9 +132,10 @@ public class GameModel {
 	 */
 	
 	public void startTurn() {
-		for(GameCharacter gc: allGameCharacters) {
+		for(GameCharacter gc: activeGameCharacters) {
 			if(gc.getName().equals("InspectorAbberline")) {
 				gc.ability(null);
+				System.out.println("Abberline ability called?");
 			}
 		}
 		usedGameCharacters = characterSetPerTurn(usedGameCharacters);
@@ -238,14 +240,22 @@ public class GameModel {
 		else
 			return false;
 	}
-	
+
 	public void resetCharacters() {
-		for(GameCharacter gc: allGameCharacters) {
+		for(GameCharacter gc: activeGameCharacters) {
 			if(gc.getName()=="InspectorAbberline") {
 				((InspectorAbberline)gc).removeRestrictions();
 			}
 		}
 	}
+
+	
+	public GameCharacter[] getActiveCharacters() {
+		return activeGameCharacters;
+	}
+
+	
+	
 	
 //---  Setter Methods   -----------------------------------------------------------------------
 

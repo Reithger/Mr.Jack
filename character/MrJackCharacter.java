@@ -181,6 +181,7 @@ public abstract class MrJackCharacter implements GameCharacter{
 		tileIndex = index;
 	}
 	
+	
 //---  Ability Queries   ----------------------------------------------------------------------
 	
 	/**
