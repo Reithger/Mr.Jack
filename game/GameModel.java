@@ -444,19 +444,10 @@ public class GameModel {
 		for(GameCharacter mjc : activeGameCharacters) {
 			initializeCharStatus(mjc);
 			mjc.deriveFromModel(this);
-			initializeCharLocation(mjc,random,used);	
+			//initializeCharLocation(mjc,random,used);	
 		}
 	}//initializeCharacters
-	
-	private void initializeCharLocation(GameCharacter m, Random r, HashSet<Integer> h) {
-		int loc = r.nextInt(board.getNumberOfTiles());
-		while(h.contains(loc) || !board.getTileAtLocation(loc).canShare()) {
-			loc = r.nextInt(board.getNumberOfTiles());
-		}
-		m.setLocation(board.getTileAtLocation(loc));
-		h.add(loc);
-	}
-	
+
 	/**
 	 * 
 	 * @param m

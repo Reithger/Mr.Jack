@@ -1,6 +1,6 @@
 package character;
 
-public abstract class MrJackCharacterDec implements GameCharacter {
+public abstract class MrJackCharacterDec extends MrJackCharacter {
 
 	protected GameCharacter character;
 	
