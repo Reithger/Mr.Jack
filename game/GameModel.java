@@ -132,7 +132,7 @@ public class GameModel {
 	
 	public void startTurn() {
 		for(GameCharacter gc: allGameCharacters) {
-			if(gc.getName()=="InspectorAbberline") {
+			if(gc.getName().equals("InspectorAbberline")) {
 				gc.ability(null);
 			}
 		}
