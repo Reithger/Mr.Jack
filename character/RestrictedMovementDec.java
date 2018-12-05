@@ -43,8 +43,7 @@ public class RestrictedMovementDec extends MrJackCharacterDec{
 
 	@Override
 	public boolean getSuspect() {
-		// TODO Auto-generated method stub
-		return false;
+		return character.getSuspect();
 	}
 
 	@Override

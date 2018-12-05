@@ -1,6 +1,7 @@
 package visualmechanics;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.awt.event.*;
 import java.io.File;
 import java.awt.*;
@@ -11,10 +12,13 @@ public class InteractFrame extends JPanel{
 	
 	private static final int screenWidth = 1260;
 	private static final int screenHeight = 860;
+	private static final String FILE_PREFIX = "assets";
 	
 	private static ArrayList<Integer[]> eventSquare;
 	private static clickComponent mouseEvent;
 	private static keyComponent keyPress;
+	
+	private static HashMap<String, Image> images = new HashMap<String, Image>();
 	
 	public InteractFrame(){
 		super();
@@ -53,11 +57,22 @@ public class InteractFrame extends JPanel{
 	
 	public static Image retrieveImage(String path) {
 		try {
-			return ImageIO.read(new File(path));
+			if(images.get(path) == null) {
+				images.put(path, ImageIO.read(InteractFrame.class.getResource(path.replace(FILE_PREFIX, ""))));
+			}
+			return images.get(path);
 		}
 		catch(Exception e) {
-			e.printStackTrace();
-			return null;
+			try {
+				if(images.get(path) == null) {
+					images.put(path, ImageIO.read(new File(path)));
+				}
+				return images.get(path);
+			}
+			catch(Exception e1) {
+				e1.printStackTrace();
+				return null;
+			}
 		}
 	}
 	

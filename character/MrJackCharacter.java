@@ -190,7 +190,7 @@ public abstract class MrJackCharacter implements GameCharacter{
 	 * 
 	 * @return - returns an int value describing the number of necessary values to perform the associated ability.
 	 */
-	//public abstract int requiredValuesForAbility();
+
 	public int requiredValuesForAbility() {
 		return 0;
 	}

@@ -51,7 +51,6 @@ public class Madame extends MrJackCharacter{
 	public boolean canMove(Tile start, Tile end, int distance) {
 		boolean prelim = super.canMove(start, end, distance);
 		return prelim && ability(start, end);
-		
 	}
 	
 //---  Ability Queries   ----------------------------------------------------------------------

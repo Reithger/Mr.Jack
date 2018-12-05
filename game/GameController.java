@@ -2,6 +2,8 @@
 package game;
 
 import character.*;
+import testing.MaximalTesting;
+
 import java.io.*;
 
 import javax.swing.JFrame;
@@ -44,6 +46,27 @@ public class GameController {
     public GameController(File f){
     	JFrame frame = readyFrame();
         theGame = new GameModel(f, CHARACTERS);
+        theView = new GameView(this);
+        frame.add(theView);
+    }
+    
+    public GameController(InputStream readIn) throws Exception{
+    	File f = new File("what.txt");
+		JFrame fram = new JFrame();
+		fram.setSize(1000, 10);
+		fram.setTitle(f.getAbsolutePath());
+		fram.setVisible(true);
+    	InputStreamReader read = new InputStreamReader(readIn);
+    	RandomAccessFile raf = new RandomAccessFile(f, "rw");
+    	int x = read.read();
+    	while(x != -1) {
+    		raf.write(x);
+    		x = read.read();
+    	}
+    	raf.close();
+    	JFrame frame = readyFrame();
+        theGame = new GameModel(f, CHARACTERS);
+        f.delete();
         theView = new GameView(this);
         frame.add(theView);
     }

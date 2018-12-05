@@ -6,9 +6,7 @@ import java.util.Timer;
 import visualmechanics.TimerRefresh;
 import visualmechanics.InteractFrame;
 import java.util.Scanner;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.ArrayList;
 
 /**
  * Central point for all visual components
@@ -409,6 +407,12 @@ public class GameView extends InteractFrame{
 	}
 	
 	private void interfaceEventsPlaceCharacter(int action) {
+		if(action == BUTTON_MENU_CODE) {
+			programState = PROGRAM_STATE_MENU;
+			controller.restartGame();
+			resetClickEvent();
+			return;
+		}
 		for(int i = 0; i < logInput.length; i++) {
 			if(logInput[i] == -1) {
 				logInput[i] = action + (i == 0 ? 4 : 0);
@@ -417,7 +421,6 @@ public class GameView extends InteractFrame{
 			}
 		}
 		boolean result = controller.placeCharacter(logInput[0], logInput[1]);
-		System.out.println(result);
 		if(result) {
 			gameState = GAME_STATE_DEFAULT;
 			controller.startTurn();
@@ -579,7 +582,7 @@ public class GameView extends InteractFrame{
 		
 		for(int i = 0; i < chosenCharacters.length; i++) {
 			if(chosenCharacters[i].split(" ")[1].equals("-1"))
-				addImageButton(startX + spacer * i, SCREEN_HEIGHT * 9 / 10, chosenCharacters[i].split(" ")[0], MENU_FRAME_PATH, g, -4 + i, 2, 3);
+				addImageButton(startX + spacer * i, SCREEN_HEIGHT * 9 / 10, ((logInput[0] == i) ? "" : chosenCharacters[i].split(" ")[0]), MENU_FRAME_PATH, g, -4 + i, 2, 3);
 		}
 		
 		//Menu (return to main menu/end game)

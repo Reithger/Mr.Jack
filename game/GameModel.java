@@ -4,12 +4,9 @@ import player.*;
 import java.io.*;
 import java.util.Scanner;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-
 import character.GameCharacter;
 import character.MrJackCharacter;
-import character.RestrictedMovementDec;
 import character.InspectorAbberline;
 import java.util.Random;
 
@@ -60,7 +57,7 @@ public class GameModel {
 	/** int value representing which player is the currently active player; who is controlling the currentMrJackCharacter?*/
 	int player;
 	
-	File boardStructure;
+	String[] boardStructure;
 	
 //---  Constructors   -------------------------------------------------------------------------
 	
@@ -73,7 +70,22 @@ public class GameModel {
 	 */
 	
 	public GameModel(File structure, GameCharacter ... potentialGameCharacters) {
-		boardStructure = structure;
+		Scanner sc = null;
+		try {
+			sc = new Scanner(structure);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		ArrayList<String> inRead = new ArrayList<String>();
+		while(sc.hasNextLine()) {
+			inRead.add(sc.nextLine());
+		}
+		boardStructure = new String[inRead.size()];
+		for(int i = 0; i < inRead.size(); i++) {
+			boardStructure[i] = inRead.get(i);
+		}
+		sc.close();
 		allGameCharacters = potentialGameCharacters;
 		selectedGameCharacters = new ArrayList<Integer>();
 	}
@@ -101,6 +113,9 @@ public class GameModel {
 		
 		activeGameCharacters = deriveGameCharacters(allGameCharacters);
 		
+		for(GameCharacter gC : activeGameCharacters) {
+			gC.setLocation(null);
+		}
 		
 		Random rand = new Random();
 		initializeCharacters(activeGameCharacters, rand);//added helper methods
@@ -132,7 +147,6 @@ public class GameModel {
 	 */
 	
 	public void startTurn() {
-		System.out.println("Start Turn");
 		for(GameCharacter gc: activeGameCharacters) {
 			if(gc.getName().equals("InspectorAbberline")) {
 				gc.ability(null);
@@ -165,6 +179,12 @@ public class GameModel {
 		if(currentGameCharacter == null)
 			return false;
 		selectedGameCharacters.add(loc);
+		resetCharacters();
+		for(GameCharacter gc: activeGameCharacters) {
+			if(gc.getName().equals("InspectorAbberline")) {
+				gc.ability(null);
+			}
+		}
 		return true;
 	}
 
@@ -179,7 +199,7 @@ public class GameModel {
 	public boolean moveGameCharacter(int choice) {
 		boolean[] reachable = board.getLegalMovements(currentGameCharacter, getCharacterLocations());
 		if(reachable[choice]) {
-			currentGameCharacter.setLocation(board.getTileAtLocation(choice));
+			currentGameCharacter.setLocation(board.getTileAtLocation(choice));	
 		}
 		return reachable[choice];
 	}
@@ -232,6 +252,7 @@ public class GameModel {
 		selectedGameCharacters.clear();
 		currentGameCharacter = null;
 		removeSuspects();
+		resetCharacters();
 		
 		if(mrJack.hasWonTimer(clock.getTurn() == NUMBER_OF_TURNS) || mrJack.hasWonEscape(board.getTileIdentity(mrJack.whoIsMrJack().getLocation()) == 'e', clock.getTurn())) {
 			gameOver = true;
@@ -243,19 +264,15 @@ public class GameModel {
 
 	public void resetCharacters() {
 		for(GameCharacter gc: activeGameCharacters) {
-			if(gc.getName()=="InspectorAbberline") {
+			if(gc.getName().equals("InspectorAbberline")) {
 				((InspectorAbberline)gc).removeRestrictions();
 			}
 		}
 	}
-
 	
 	public GameCharacter[] getActiveCharacters() {
 		return activeGameCharacters;
 	}
-
-	
-	
 	
 //---  Setter Methods   -----------------------------------------------------------------------
 
@@ -476,23 +493,9 @@ public class GameModel {
 	 * @return - Returns the generated Board object, composed of Tile objects.
 	 */
 	
-	private Board deriveBoard(File structure) {
-		try {
-			Scanner sc = new Scanner(structure);
-			ArrayList<String> input = new ArrayList<String>();
-			while(sc.hasNextLine()) {
-				input.add(sc.nextLine());
-			}
-			String[] fileBoardInput = input.toArray(new String[input.size()]);	//Parse the file to get this value
-			Board newBoard = new Board(fileBoardInput);
-			sc.close();
-			return newBoard;
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			System.out.println("File exception during Board Construction");
-			return null;
-		}
+	private Board deriveBoard(String[] structure) {
+		Board newBoard = new Board(structure);
+		return newBoard;	
 	}
 
 	/**
