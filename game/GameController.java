@@ -52,10 +52,6 @@ public class GameController {
     
     public GameController(InputStream readIn) throws Exception{
     	File f = new File("what.txt");
-		JFrame fram = new JFrame();
-		fram.setSize(1000, 10);
-		fram.setTitle(f.getAbsolutePath());
-		fram.setVisible(true);
     	InputStreamReader read = new InputStreamReader(readIn);
     	RandomAccessFile raf = new RandomAccessFile(f, "rw");
     	int x = read.read();

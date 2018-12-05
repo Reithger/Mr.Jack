@@ -23,8 +23,6 @@ public class InspectorAbberline extends MrJackCharacter {
 	
 //---  Instance Variables   -------------------------------------------------------------------
 	
-	/** ArrayList<<r>Exit> object describing the Tile objects associated to this InspectorAbberline object*/
-	private ArrayList<Exit> relevantTiles;
 	private GameCharacter[] charactersInPlay;
 	private boolean[] restrictedMovementChars;
 
@@ -39,7 +37,6 @@ public class InspectorAbberline extends MrJackCharacter {
 	public InspectorAbberline(){
 		name = NAME;
 		numMoves = NUM_MOVES;
-		relevantTiles = new ArrayList<Exit>();
 		shortName = SHORT_NAME;
 		this.setLocation(null);
 	}
