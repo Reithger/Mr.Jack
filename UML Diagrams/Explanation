@@ -1,0 +1,10 @@
+So I had a look at this after promising some folks the UML for this project and realized how bad of a job we'd done, so I have provided the
+original UML with the program untouched, then a UML after I'd shuffled the Classes around and made some new packages/hierarchy, and then a third
+UML after I did some small refactoring to reduce some associations, while others were too substantial to fix in my current time frame.
+
+v1, v2, and v3 are the respective UML Diagrams of each step.
+
+These should be taken as inspiration in some ways, and as mistakes to avoid in others, this is a messy one! The game was also very complex, to be
+fair to my past self, but oof. I would do things very differently now.
+
+Enjoy!
